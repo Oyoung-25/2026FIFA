@@ -29,7 +29,8 @@
             
             try {
                 // 2. 這就是補上 season=2026 的正確寫法
-                const res = await fetch(`${BACKEND}/api/football?endpoint=fixtures?league=1&season=2026`);
+                // 修改這一行：
+                const res = await fetch(`${BACKEND}/api/football?endpoint=fixtures?league=39&season=2026`);
                 const data = await res.json();
                 
                 if (!data.response || data.response.length === 0) {
