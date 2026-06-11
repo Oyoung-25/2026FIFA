@@ -1,7 +1,7 @@
 // api/football.js
 export default async function handler(req, res) {
-  const { endpoint } = req.query; // 接收類似 'fixtures?league=1' 或 'players/squads?team=33'
-  const API_KEY = "你的RapidAPI_Key"; 
+  const { endpoint } = req.query; // 例如: endpoint=fixtures?league=1&season=2026
+  const API_KEY = "你的RapidAPI_Key"; // 貼上你的 API Key
 
   const url = `https://v3.football.api-sports.io/${endpoint}`;
   
@@ -14,9 +14,9 @@ export default async function handler(req, res) {
       }
     });
     const data = await response.json();
-    res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate'); // 自動快取一小時，防止頻繁呼叫導致超額
+    res.setHeader('Cache-Control', 's-maxage=3600');
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: "運動數據連線異常" });
+    res.status(500).json({ error: "數據擷取失敗" });
   }
 }
