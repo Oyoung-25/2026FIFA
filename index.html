@@ -30,6 +30,7 @@
         
         try {
             // 測試呼叫賽程 (Fixtures)
+           // 修改 init 函數中的 fetch 這一行：
             const res = await fetch(`${BACKEND}/api/football?endpoint=fixtures?league=1&season=2026`);
             const data = await res.json();
             
