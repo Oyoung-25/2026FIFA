@@ -1,34 +1,51 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>2026 世界盃賽程</title>
+    <title>2026 世界盃賽程表</title>
     <style>
         body { font-family: sans-serif; padding: 20px; background: #f4f7f6; }
-        .match-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .match-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 5px solid #2b4c7e; }
+        .header { text-align: center; color: #2b4c7e; }
+        .group-tag { font-size: 0.8em; color: #666; background: #eee; padding: 2px 6px; border-radius: 4px; }
     </style>
 </head>
 <body>
-    <h1>⚽ 2026 世界盃賽事</h1>
-    <div id="content">讀取中...</div>
+    <h1 class="header">⚽ 2026 世界盃賽事</h1>
+    <div id="content"></div>
 
     <script>
-        async function loadWC() {
+        // 這是數據資料庫
+        const matchData = {
+            "matches": [
+                { "utcDate": "2026-06-11T19:00:00Z", "group": "GROUP_A", "homeTeam": { "name": "Mexico" }, "awayTeam": { "name": "South Africa" } },
+                { "utcDate": "2026-06-12T02:00:00Z", "group": "GROUP_A", "homeTeam": { "name": "South Korea" }, "awayTeam": { "name": "Czechia" } },
+                { "utcDate": "2026-06-12T19:00:00Z", "group": "GROUP_B", "homeTeam": { "name": "Canada" }, "awayTeam": { "name": "Bosnia-Herzegovina" } },
+                { "utcDate": "2026-06-13T01:00:00Z", "group": "GROUP_D", "homeTeam": { "name": "United States" }, "awayTeam": { "name": "Paraguay" } },
+                { "utcDate": "2026-06-13T19:00:00Z", "group": "GROUP_B", "homeTeam": { "name": "Qatar" }, "awayTeam": { "name": "Switzerland" } },
+                { "utcDate": "2026-06-13T22:00:00Z", "group": "GROUP_C", "homeTeam": { "name": "Brazil" }, "awayTeam": { "name": "Morocco" } },
+                { "utcDate": "2026-06-14T01:00:00Z", "group": "GROUP_C", "homeTeam": { "name": "Haiti" }, "awayTeam": { "name": "Scotland" } },
+                { "utcDate": "2026-06-14T04:00:00Z", "group": "GROUP_D", "homeTeam": { "name": "Australia" }, "awayTeam": { "name": "Turkey" } }
+            ]
+        };
+        
+        function renderMatches() {
             const content = document.getElementById('content');
-            try {
-                const res = await fetch('/api/football');
-                const data = await res.json();
-                content.innerHTML = data.matches.map(m => `
+            content.innerHTML = matchData.matches.map(m => {
+                const home = m.homeTeam.name || "待定";
+                const away = m.awayTeam.name || "待定";
+                const date = new Date(m.utcDate).toLocaleString('zh-TW', { hour12: false });
+                const group = m.group ? `<span class="group-tag">${m.group}</span>` : "";
+
+                return `
                     <div class="match-card">
-                        <strong>${m.homeTeam.name || '待定'} vs ${m.awayTeam.name || '待定'}</strong><br>
-                        <small>${new Date(m.utcDate).toLocaleString()}</small>
+                        <strong>${home} vs ${away}</strong> ${group}<br>
+                        <small>📅 ${date}</small>
                     </div>
-                `).join('');
-            } catch (e) {
-                content.innerHTML = "❌ 連線失敗";
-            }
+                `;
+            }).join('');
         }
-        loadWC();
+        renderMatches();
     </script>
 </body>
 </html>
