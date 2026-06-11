@@ -1,30 +1,18 @@
 export default async function handler(req, res) {
-  // 設定 CORS 權限，允許來自任何網頁的請求
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-  if (req.method === 'OPTIONS') {
-    res.status(200).end();
-    return;
-  }
-
-  const { endpoint } = req.query;
-  const API_KEY = "dbccece6f85b1c532efe9e833f309eac";
-
-  const url = `https://v3.football.api-sports.io/${endpoint}`;
+  // 使用你提供的 Token
+  const API_KEY = "99b24a3729164af6ab58bb604cf2b13f"; 
+  // WC = World Cup, 2026 年賽事代碼
+  const url = 'https://api.football.data.org/v4/competitions/WC/matches'; 
   
   try {
     const response = await fetch(url, {
-      method: 'GET',
-      headers: { 
-        'x-rapidapi-key': API_KEY, 
-        'x-rapidapi-host': 'v3.football.api-sports.io' 
-      }
+      headers: { 'X-Auth-Token': API_KEY }
     });
     const data = await response.json();
+    
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: "數據擷取失敗" });
   }
 }
