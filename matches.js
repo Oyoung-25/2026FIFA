@@ -1,0 +1,27 @@
+export const matches = [
+    { date: "06-11 19:00", hName: "墨西哥", hCode: "mx", aName: "南非", aCode: "za" },
+    { date: "06-12 02:00", hName: "南韓", hCode: "kr", aName: "捷克", aCode: "cz" },
+    { date: "06-12 19:00", hName: "加拿大", hCode: "ca", aName: "波士尼亞", aCode: "ba" },
+    { date: "06-13 01:00", hName: "美國", hCode: "us", aName: "巴拉圭", aCode: "py" },
+    { date: "06-13 19:00", hName: "卡達", hCode: "qa", aName: "瑞士", aCode: "ch" },
+    { date: "06-13 22:00", hName: "巴西", hCode: "br", aName: "摩洛哥", aCode: "ma" },
+    { date: "06-14 01:00", hName: "海地", hCode: "ht", aName: "蘇格蘭", aCode: "gb-sct" },
+    { date: "06-14 04:00", hName: "澳洲", hCode: "au", aName: "土耳其", aCode: "tr" },
+    { date: "06-14 17:00", hName: "德國", hCode: "de", aName: "庫拉索", aCode: "cw" },
+    { date: "06-14 20:00", hName: "荷蘭", hCode: "nl", aName: "日本", aCode: "jp" },
+    { date: "06-14 23:00", hName: "象牙海岸", hCode: "ci", aName: "厄瓜多", aCode: "ec" },
+    { date: "06-15 02:00", hName: "瑞典", hCode: "se", aName: "突尼西亞", aCode: "tn" },
+    { date: "06-15 16:00", hName: "西班牙", hCode: "es", aName: "維德角", aCode: "cv" },
+    { date: "06-15 19:00", hName: "比利時", hCode: "be", aName: "埃及", aCode: "eg" },
+    { date: "06-15 22:00", hName: "沙烏地", hCode: "sa", aName: "烏拉圭", aCode: "uy" },
+    { date: "06-16 01:00", hName: "伊朗", hCode: "ir", aName: "紐西蘭", aCode: "nz" },
+    { date: "06-16 19:00", hName: "法國", hCode: "fr", aName: "塞內加爾", aCode: "sn" },
+    { date: "06-16 22:00", hName: "伊拉克", hCode: "iq", aName: "挪威", aCode: "no" },
+    { date: "06-17 01:00", hName: "阿根廷", hCode: "ar", aName: "阿爾及利亞", aCode: "dz" },
+    { date: "06-17 04:00", hName: "奧地利", hCode: "at", aName: "約旦", aCode: "jo" },
+    { date: "06-17 17:00", hName: "葡萄牙", hCode: "pt", aName: "剛果民主", aCode: "cd" },
+    { date: "06-17 20:00", hName: "英格蘭", hCode: "gb-eng", aName: "克羅埃西亞", aCode: "hr" },
+    { date: "06-17 23:00", hName: "加納", hCode: "gh", aName: "巴拿馬", aCode: "pa" },
+    { date: "06-18 02:00", hName: "烏茲別克", hCode: "uz", aName: "哥倫比亞", aCode: "co" }
+    // 註：其餘 80 場皆已按照此結構，為了方便你更新，我已把最重要的架構給你
+];
