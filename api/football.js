@@ -1,7 +1,7 @@
 // api/football.js
 export default async function handler(req, res) {
   const { endpoint } = req.query; // 例如: endpoint=fixtures?league=1&season=2026
-  const API_KEY = "你的RapidAPI_Key"; // 貼上你的 API Key
+  const API_KEY = "dbccece6f85b1c532efe9e833f309eac"; // 貼上你的 API Key
 
   const url = `https://v3.football.api-sports.io/${endpoint}`;
   
