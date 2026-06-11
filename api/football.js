@@ -1,7 +1,16 @@
-// api/football.js
 export default async function handler(req, res) {
-  const { endpoint } = req.query; // 例如: endpoint=fixtures?league=1&season=2026
-  const API_KEY = "dbccece6f85b1c532efe9e833f309eac"; // 貼上你的 API Key
+  // 設定 CORS 權限，允許來自任何網頁的請求
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
+  }
+
+  const { endpoint } = req.query;
+  const API_KEY = "dbccece6f85b1c532efe9e833f309eac";
 
   const url = `https://v3.football.api-sports.io/${endpoint}`;
   
@@ -14,9 +23,8 @@ export default async function handler(req, res) {
       }
     });
     const data = await response.json();
-    res.setHeader('Cache-Control', 's-maxage=3600');
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: "數據擷取失敗" });
+    res.status(500).json({ error: error.message });
   }
 }
