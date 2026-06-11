@@ -20,63 +20,65 @@
         <div id="content"></div>
     </div>
 
-    <script>
-        // 🚨 這裡填入你的 Vercel 網址 (結尾不要斜線)
-        const BACKEND = "https://2026-fifa-439n.vercel.app"; 
+   <script>
+    // 確保這裡的網址跟你剛測試成功的網址完全一致
+    const BACKEND = "https://2026-fifa-439n.vercel.app"; 
 
-        async function init() {
-            renderFixtures();
+    async function init() {
+        const content = document.getElementById('content');
+        content.innerHTML = "正在載入賽事...";
+        
+        try {
+            // 測試呼叫賽程 (Fixtures)
+            const res = await fetch(`${BACKEND}/api/football?endpoint=fixtures?league=1&season=2026`);
+            const data = await res.json();
+            
+            // 檢查資料結構是否正確
+            if (!data.response || data.response.length === 0) {
+                content.innerHTML = "目前沒有找到 2026 年的賽事資料。 (API 回傳: " + JSON.stringify(data) + ")";
+                return;
+            }
+
+            content.innerHTML = data.response.map(m => `
+                <div class="card" onclick="loadSquad(${m.teams.home.id}, '${m.teams.home.name}')">
+                    <strong>${m.teams.home.name} vs ${m.teams.away.name}</strong><br>
+                    <small>日期: ${new Date(m.fixture.date).toLocaleDateString()}</small>
+                </div>
+            `).join('');
+            
+        } catch (e) {
+            content.innerHTML = "❌ 前端無法顯示資料，錯誤: " + e.message;
         }
+    }
 
-        async function renderFixtures() {
-            const content = document.getElementById('content');
-            content.innerHTML = '<div class="loading">📡 正在從後端擷取賽程...</div>';
+    async function loadSquad(teamId, teamName) {
+        const content = document.getElementById('content');
+        content.innerHTML = "正在調閱球員...";
+        try {
+            const res = await fetch(`${BACKEND}/api/football?endpoint=players/squads?team=${teamId}`);
+            const data = await res.json();
+            
+            if (!data.response || data.response.length === 0) {
+                content.innerHTML = "這支球隊暫無球員資料。<br><button onclick='init()'>回賽程</button>";
+                return;
+            }
 
-            try {
-                const res = await fetch(`${BACKEND}/api/football?endpoint=fixtures?league=1&season=2026`);
-                const data = await res.json();
-                
-                content.innerHTML = data.response.map(m => `
-                    <div class="card" onclick="loadSquad(${m.teams.home.id}, '${m.teams.home.name}')">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span>${m.teams.home.name} vs ${m.teams.away.name}</span>
-                            <small>${new Date(m.fixture.date).toLocaleDateString()}</small>
-                        </div>
+            const squad = data.response[0].players;
+            content.innerHTML = `
+                <button onclick="init()">⬅️ 回列表</button>
+                <h2>${teamName} 陣容</h2>
+                ${squad.map(p => `
+                    <div class="card">
+                        <strong>${p.name}</strong> (背號: ${p.number || '-'})
                     </div>
-                `).join('');
-            } catch (e) {
-                content.innerHTML = "❌ 連線失敗，請檢查 Vercel 網址或 API 設定。";
-            }
+                `).join('')}
+            `;
+        } catch (e) {
+            content.innerHTML = "❌ 讀取失敗: " + e.message;
         }
+    }
 
-        async function loadSquad(teamId, teamName) {
-            const content = document.getElementById('content');
-            content.innerHTML = `<div class="loading">正在調閱 ${teamName} 球員名單...</div>`;
-
-            try {
-                const res = await fetch(`${BACKEND}/api/football?endpoint=players/squads?team=${teamId}`);
-                const data = await res.json();
-                const squad = data.response[0].players;
-
-                content.innerHTML = `
-                    <button onclick="renderFixtures()">⬅️ 回到賽程表</button>
-                    <h2>${teamName} 球員陣容</h2>
-                    ${squad.map(p => `
-                        <div class="card" style="display:flex; align-items:center; gap:15px;">
-                            <img src="${p.photo}" width="50" style="border-radius:25px; background:#ddd;">
-                            <div>
-                                <strong>${p.name}</strong><br>
-                                <small>背號: ${p.number || '-'} | 位置: ${p.position}</small>
-                            </div>
-                        </div>
-                    `).join('')}
-                `;
-            } catch (e) {
-                content.innerHTML = "❌ 無法取得名單。<br><button onclick='renderFixtures()'>回列表</button>";
-            }
-        }
-
-        init();
-    </script>
+    init();
+</script>
 </body>
 </html>
