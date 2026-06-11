@@ -1,0 +1,8 @@
+{
+  "name": "足球數據中心",
+  "short_name": "足球App",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2b4c7e"
+}
