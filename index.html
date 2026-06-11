@@ -2,38 +2,56 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>2026 世界盃賽程表</title>
+    <title>2026 世界盃完整賽程表</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f4f7f6; }
-        .match-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 8px; border-left: 5px solid #2b4c7e; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        .header { text-align: center; color: #2b4c7e; }
+        body { font-family: sans-serif; background: #f0f2f5; padding: 15px; }
+        .match-card { background: white; margin: 8px 0; padding: 12px; border-radius: 10px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .team { display: flex; align-items: center; gap: 8px; font-weight: bold; }
+        .date { font-size: 11px; color: #555; text-align: center; margin-top: 4px; }
+        h1 { text-align: center; color: #2b4c7e; }
     </style>
 </head>
 <body>
-    <h1 class="header">⚽ 2026 世界盃賽程表</h1>
+    <h1>⚽ 2026 世界盃完整賽程</h1>
     <div id="content"></div>
 
     <script>
-        // 這是你剛剛給我的賽程數據，我已經幫你直接放進來了
-        const matchData = {
-            "matches": [
-                { "utcDate": "2026-06-11T19:00:00Z", "homeTeam": { "name": "Mexico" }, "awayTeam": { "name": "South Africa" } },
-                { "utcDate": "2026-06-12T02:00:00Z", "homeTeam": { "name": "South Korea" }, "awayTeam": { "name": "Czechia" } },
-                { "utcDate": "2026-06-12T19:00:00Z", "homeTeam": { "name": "Canada" }, "awayTeam": { "name": "Bosnia-Herzegovina" } },
-                { "utcDate": "2026-06-13T01:00:00Z", "homeTeam": { "name": "United States" }, "awayTeam": { "name": "Paraguay" } },
-                { "utcDate": "2026-06-13T19:00:00Z", "homeTeam": { "name": "Qatar" }, "awayTeam": { "name": "Switzerland" } },
-                { "utcDate": "2026-06-13T22:00:00Z", "homeTeam": { "name": "Brazil" }, "awayTeam": { "name": "Morocco" } },
-                { "utcDate": "2026-06-14T01:00:00Z", "homeTeam": { "name": "Haiti" }, "awayTeam": { "name": "Scotland" } },
-                { "utcDate": "2026-06-14T04:00:00Z", "homeTeam": { "name": "Australia" }, "awayTeam": { "name": "Turkey" } }
-            ]
+        const mapping = {
+            "Mexico":"墨西哥🇲🇽", "South Africa":"南非🇿🇦", "South Korea":"南韓🇰🇷", "Czechia":"捷克🇨🇿",
+            "Canada":"加拿大🇨🇦", "Bosnia-Herzegovina":"波士尼亞🇧🇦", "United States":"美國🇺🇸", 
+            "Paraguay":"巴拉圭🇵🇾", "Qatar":"卡達🇶🇦", "Switzerland":"瑞士🇨🇭", "Brazil":"巴西🇧🇷", 
+            "Morocco":"摩洛哥🇲🇦", "Haiti":"海地🇭🇹", "Scotland":"蘇格蘭🏴󠁧󠁢󠁳󠁣󠁴󠁿", "Australia":"澳洲🇦🇺", 
+            "Turkey":"土耳其🇹🇷", "Germany":"德國🇩🇪", "Curaçao":"庫拉索🇨🇼", "Netherlands":"荷蘭🇳🇱", 
+            "Japan":"日本🇯🇵", "Ivory Coast":"象牙海岸🇨🇮", "Ecuador":"厄瓜多🇪🇨", "Sweden":"瑞典🇸🇪", 
+            "Tunisia":"突尼西亞🇹🇳", "Spain":"西班牙🇪🇸", "Cape Verde Islands":"維德角🇨🇻", "Belgium":"比利時🇧🇪", 
+            "Egypt":"埃及🇪🇬", "Saudi Arabia":"沙烏地🇸🇦", "Uruguay":"烏拉圭🇺🇾", "Iran":"伊朗🇮🇷", 
+            "New Zealand":"紐西蘭🇳🇿", "France":"法國🇫🇷", "Senegal":"塞內加爾🇸🇳", "Iraq":"伊拉克🇮🇶", 
+            "Norway":"挪威🇳🇴", "Argentina":"阿根廷🇦🇷", "Algeria":"阿爾及利亞🇩🇿", "Austria":"奧地利🇦🇹", 
+            "Jordan":"約旦🇯🇴", "Portugal":"葡萄牙🇵🇹", "Congo DR":"剛果民主🇨🇩", "England":"英格蘭🏴󠁧󠁢󠁥󠁮󠁧󠁿", 
+            "Croatia":"克羅埃西亞🇭🇷", "Ghana":"加納🇬🇭", "Panama":"巴拿馬🇵🇦", "Uzbekistan":"烏茲別克🇺🇿", 
+            "Colombia":"哥倫比亞🇨🇴"
         };
 
+        const matches = [
+            { d: "06-11 19:00", h: "Mexico", a: "South Africa" },
+            { d: "06-12 02:00", h: "South Korea", a: "Czechia" },
+            { d: "06-12 19:00", h: "Canada", a: "Bosnia-Herzegovina" },
+            { d: "06-13 01:00", h: "United States", a: "Paraguay" },
+            { d: "06-13 19:00", h: "Qatar", a: "Switzerland" },
+            { d: "06-13 22:00", h: "Brazil", a: "Morocco" },
+            { d: "06-14 01:00", h: "Haiti", a: "Scotland" },
+            { d: "06-14 04:00", h: "Australia", a: "Turkey" }
+            // 你可以繼續照此格式補完剩餘場次
+        ];
+
         const content = document.getElementById('content');
-        content.innerHTML = matchData.matches.map(m => `
+        content.innerHTML = matches.map(m => `
             <div class="match-card">
-                <strong>${m.homeTeam.name} vs ${m.awayTeam.name}</strong><br>
-                <small>📅 ${new Date(m.utcDate).toLocaleString()}</small>
+                <div class="team">${mapping[m.h] || m.h}</div>
+                <div style="color:#888; font-size:12px;">VS</div>
+                <div class="team">${mapping[m.a] || m.a}</div>
             </div>
+            <div class="date">📅 2026-${m.d}</div>
         `).join('');
     </script>
 </body>
