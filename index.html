@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 FIFA 世界盃完整賽程</title>
+    
+    <link rel="apple-touch-icon" href="https://crests.football-data.org/wm26.png">
+    <link rel="icon" type="image/png" href="https://crests.football-data.org/wm26.png">
+    
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; color: #333; padding: 20px; margin: 0; }
         h1 { text-align: center; color: #1a365d; margin-bottom: 25px; font-size: 28px; font-weight: 700; }
-        /* 網格系統：自動根據螢幕大小調整一排要放幾個圖塊 */
         .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
-        /* 獨立圖塊（卡片）樣式 */
         .match-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #1a365d; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
         .match-card:hover { transform: translateY(-3px); }
         .match-meta { display: flex; justify-content: space-between; font-size: 11px; color: #718096; margin-bottom: 12px; font-weight: bold; }
         .stage-tag { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
         .teams-area { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; text-align: center; }
-        /* 國旗圖片防卡、高畫質設定 */
         .flag { width: 36px; height: 24px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
         .team-name { font-size: 14px; font-weight: 600; color: #2d3748; }
         .vs { font-size: 12px; color: #a0aec0; font-weight: 700; padding: 0 10px; }
@@ -29,7 +30,6 @@
     <div class="match-grid" id="schedule-container"></div>
 
     <script>
-        // 104場正式賽程大數據（已全面校對中文名稱與 FlagCDN 國旗代碼）
         const fullMatches = [
             // --- 小組賽第 1 輪 ---
             { id: 1, stage: "小組賽 A組", date: "2026-06-12 04:00", h: "墨西哥", hc: "mx", a: "南非", ac: "za" },
@@ -50,8 +50,8 @@
             { id: 16, stage: "小組賽 H組", date: "2026-06-16 09:00", h: "沙烏地阿拉伯", hc: "sa", a: "烏拉圭", ac: "uy" },
             { id: 17, stage: "小組賽 I組", date: "2026-06-16 21:00", h: "法國", hc: "fr", a: "塞內加爾", ac: "sn" },
             { id: 18, stage: "小組賽 I組", date: "2026-06-17 03:00", h: "伊拉克", hc: "iq", a: "挪威", ac: "no" },
-            { id: 19, stage: "小組賽 J組", date: "2026-06-17 06:00", h: "阿根廷", hc: "ar", a: "阿爾及利亞", ac: "dz" },
             { id: 20, stage: "小組賽 J組", date: "2026-06-17 09:00", h: "奧地利", hc: "at", a: "約旦", ac: "jo" },
+            { id: 19, stage: "小組賽 J組", date: "2026-06-17 06:00", h: "阿根廷", hc: "ar", a: "阿爾及利亞", ac: "dz" },
             { id: 21, stage: "小組賽 K組", date: "2026-06-17 21:00", h: "葡萄牙", hc: "pt", a: "剛果民主共和國", ac: "cd" },
             { id: 22, stage: "小組賽 K組", date: "2026-06-18 03:00", h: "烏茲別克", hc: "uz", a: "哥倫比亞", ac: "co" },
             { id: 23, stage: "小組賽 L組", date: "2026-06-18 06:00", h: "英格蘭", hc: "gb-eng", a: "克羅埃西亞", ac: "hr" },
@@ -116,13 +116,12 @@
             { id: 76, stage: "32強淘汰賽", date: "2026-06-30 08:00", h: "D組第一", hc: "un", a: "F組第二", ac: "un" },
             { id: 77, stage: "32強淘汰賽", date: "2026-07-01 02:00", h: "E組第一", hc: "un", a: "D組第二", ac: "un" },
             { id: 78, stage: "32強淘汰賽", date: "2026-07-01 06:00", h: "F組第一", hc: "un", a: "E組第二", ac: "un" },
-            { id: 79, stage: "32強淘汰賽", date: "2026-07-02 02:00", h: "G組第一", hc: "un", a: "I組第二", ac: "un" },
             { id: 80, stage: "32強淘汰賽", date: "2026-07-02 06:00", h: "H組第一", hc: "un", a: "G組第二", ac: "un" },
+            { id: 79, stage: "32強淘汰賽", date: "2026-07-02 02:00", h: "G組第一", hc: "un", a: "I組第二", ac: "un" },
             { id: 81, stage: "32強淘汰賽", date: "2026-07-03 02:00", h: "I組第一", hc: "un", a: "H組第二", ac: "un" },
             { id: 82, stage: "32強淘汰賽", date: "2026-07-03 06:00", h: "J組第一", hc: "un", a: "L組第二", ac: "un" },
             { id: 83, stage: "32強淘汰賽", date: "2026-07-04 02:00", h: "K組第一", hc: "un", a: "J組第二", ac: "un" },
             { id: 84, stage: "32強淘汰賽", date: "2026-07-04 06:00", h: "L組第一", hc: "un", a: "K組第二", ac: "un" },
-            // (註：其餘 75-88 場為各小組第三名出線之最佳對戰配置組合)
             { id: 85, stage: "32強淘汰賽", date: "2026-07-04 22:00", h: "分組最佳第三", hc: "un", a: "分組第一", ac: "un" },
             { id: 86, stage: "32強淘汰賽", date: "2026-07-05 03:00", h: "分組最佳第三", hc: "un", a: "分組第一", ac: "un" },
             { id: 87, stage: "32強淘汰賽", date: "2026-07-05 07:00", h: "分組最佳第三", hc: "un", a: "分組第一", ac: "un" },
@@ -153,10 +152,8 @@
             { id: 104, stage: "世界盃 總決賽", date: "2026-07-20 03:00", h: "第101場勝者", hc: "un", a: "第102場勝者", ac: "un" }
         ];
 
-        // 自動動態生成網頁卡片區塊
         const container = document.getElementById('schedule-container');
         container.innerHTML = fullMatches.map(m => {
-            // 如果淘汰賽隊伍未定，顯示地球盾牌圖
             const homeFlagUrl = m.hc === 'un' ? 'https://flagcdn.com/w40/un.png' : `https://flagcdn.com/w40/${m.hc}.png`;
             const awayFlagUrl = m.ac === 'un' ? 'https://flagcdn.com/w40/un.png' : `https://flagcdn.com/w40/${m.ac}.png`;
 
