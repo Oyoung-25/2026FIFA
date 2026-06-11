@@ -3,76 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 足球數據中心</title>
+    <title>足球數據儀表板</title>
     <style>
-        :root { --primary: #2b4c7e; --bg: #f4f7f6; }
-        body { font-family: sans-serif; background: var(--bg); padding: 15px; margin: 0; }
-        h1 { color: var(--primary); text-align: center; }
-        .card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; }
-        .loading { text-align: center; margin-top: 50px; font-weight: bold; color: var(--primary); }
-        button { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-bottom: 15px; }
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        .card { border: 1px solid #ddd; padding: 10px; margin: 5px 0; border-radius: 5px; cursor: pointer; }
+        pre { background: #eee; padding: 10px; overflow-x: auto; font-size: 12px; }
+        button { padding: 10px; background: #2b4c7e; color: white; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
-    <h1>⚽ 2026 足球賽事</h1>
-    <div id="app">
-        <div id="content"></div>
-    </div>
+    <h1>⚽ 足球數據中心</h1>
+    <div id="content">正在初始化後端連線...</div>
 
     <script>
-        // 1. 請確認這裡填入你的網址 (結尾無斜線)
-        const BACKEND = "https://2026-fifa-439n.vercel.app"; 
+        const BACKEND = "https://2026-fifa-439n.vercel.app";
 
         async function init() {
             const content = document.getElementById('content');
-            content.innerHTML = '<div class="loading">📡 正在載入 2026 賽程...</div>';
-            
             try {
-                // 2. 這就是補上 season=2026 的正確寫法
-                // 修改這一行：
-                const res = await fetch(`${BACKEND}/api/football?endpoint=fixtures?league=39&season=2026`);
+                // 測試連線：搜尋英超 (Premier League)
+                const res = await fetch(`${BACKEND}/api/football?endpoint=leagues?search=Premier`);
                 const data = await res.json();
                 
-                if (!data.response || data.response.length === 0) {
-                    content.innerHTML = "目前暫無 2026 年賽事資料。<br><small>API 回傳: " + JSON.stringify(data) + "</small>";
-                    return;
+                if (data.response && data.response.length > 0) {
+                    content.innerHTML = `
+                        <h3>找到的聯賽：</h3>
+                        ${data.response.map(l => `
+                            <div class="card" onclick="fetchFixtures(${l.league.id})">
+                                <strong>${l.league.name}</strong> (點擊查看 2026 賽程)
+                            </div>
+                        `).join('')}
+                    `;
+                } else {
+                    content.innerHTML = "未找到資料。API 回傳: <pre>" + JSON.stringify(data, null, 2) + "</pre>";
                 }
-
-                content.innerHTML = data.response.map(m => `
-                    <div class="card" onclick="loadSquad(${m.teams.home.id}, '${m.teams.home.name}')">
-                        <strong>${m.teams.home.name} vs ${m.teams.away.name}</strong><br>
-                        <small>日期: ${new Date(m.fixture.date).toLocaleDateString()}</small>
-                    </div>
-                `).join('');
             } catch (e) {
                 content.innerHTML = "❌ 連線失敗: " + e.message;
             }
         }
 
-        async function loadSquad(teamId, teamName) {
+        async function fetchFixtures(leagueId) {
             const content = document.getElementById('content');
-            content.innerHTML = `<div class="loading">正在調閱 ${teamName} 球員名單...</div>`;
-
+            content.innerHTML = "正在載入 2026 賽程...";
             try {
-                const res = await fetch(`${BACKEND}/api/football?endpoint=players/squads?team=${teamId}`);
+                const res = await fetch(`${BACKEND}/api/football?endpoint=fixtures?league=${leagueId}&season=2026`);
                 const data = await res.json();
-                const squad = data.response[0].players;
-
-                content.innerHTML = `
-                    <button onclick="init()">⬅️ 回到賽程表</button>
-                    <h2>${teamName} 陣容</h2>
-                    ${squad.map(p => `
-                        <div class="card" style="display:flex; align-items:center; gap:15px;">
-                            <img src="${p.photo}" width="50" style="border-radius:25px; background:#ddd;">
-                            <div>
-                                <strong>${p.name}</strong><br>
-                                <small>背號: ${p.number || '-'} | 位置: ${p.position}</small>
-                            </div>
+                
+                if (data.response && data.response.length > 0) {
+                    content.innerHTML = `<button onclick="init()">⬅️ 返回</button>` + data.response.map(m => `
+                        <div class="card">
+                            ${m.teams.home.name} vs ${m.teams.away.name}<br>
+                            <small>${new Date(m.fixture.date).toLocaleDateString()}</small>
                         </div>
-                    `).join('')}
-                `;
+                    `).join('');
+                } else {
+                    content.innerHTML = "該聯賽目前無 2026 資料。<br><button onclick='init()'>返回</button>";
+                }
             } catch (e) {
-                content.innerHTML = "❌ 無法取得名單。<br><button onclick='init()'>回賽程表</button>";
+                content.innerHTML = "❌ 載入失敗: " + e.message;
             }
         }
 
