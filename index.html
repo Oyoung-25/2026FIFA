@@ -10,90 +10,90 @@
     
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; color: #333; padding: 20px; margin: 0; }
-        h1 { text-align: center; color: #1a365d; margin-bottom: 25px; font-size: 28px; font-weight: 700; }
-        .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
-        .match-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #1a365d; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
-        .match-card:hover { transform: translateY(-3px); }
+        h1 { text-align: center; color: #1a365d; margin-bottom: 25px; font-size: 26px; font-weight: 700; }
+        .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
+        .match-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #1a365d; display: flex; flex-direction: column; justify-content: space-between; }
         .match-meta { display: flex; justify-content: space-between; font-size: 11px; color: #718096; margin-bottom: 12px; font-weight: bold; }
         .stage-tag { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
         .teams-area { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; text-align: center; }
-        .flag { width: 36px; height: 24px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+        .flag { width: 38px; height: 25px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
         .team-name { font-size: 14px; font-weight: 600; color: #2d3748; }
         .vs { font-size: 12px; color: #a0aec0; font-weight: 700; padding: 0 10px; }
-        .match-time { font-size: 12px; color: #4a5568; background: #edf2f7; text-align: center; padding: 6px; border-radius: 6px; font-weight: 600; }
+        .match-time { font-size: 12px; color: #1a365d; background: #e1e8f5; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; }
     </style>
 </head>
 <body>
 
-    <h1>🏆 2026 FIFA 世界盃完整賽程中心 (台灣時間)</h1>
+    <h1>🏆 2026 FIFA 世界盃完整賽程 (台灣時間)</h1>
     <div class="match-grid" id="schedule-container"></div>
 
     <script>
+        // 104場官方校正賽程數據（時區全面校正為台灣時間 UTC+8）
         const fullMatches = [
             // --- 小組賽第 1 輪 ---
-            { id: 1, stage: "小組賽 A組", date: "2026-06-12 04:00", h: "墨西哥", hc: "mx", a: "南非", ac: "za" },
-            { id: 2, stage: "小組賽 A組", date: "2026-06-12 11:00", h: "南韓", hc: "kr", a: "捷克", ac: "cz" },
-            { id: 3, stage: "小組賽 B組", date: "2026-06-12 23:00", h: "加拿大", hc: "ca", a: "波士尼亞", ac: "ba" },
-            { id: 4, stage: "小組賽 B組", date: "2026-06-13 06:00", h: "卡達", hc: "qa", a: "瑞士", ac: "ch" },
-            { id: 5, stage: "小組賽 C組", date: "2026-06-13 21:00", h: "巴西", hc: "br", a: "摩洛哥", ac: "ma" },
-            { id: 6, stage: "小組賽 C組", date: "2026-06-14 03:00", h: "海地", hc: "ht", a: "蘇格蘭", ac: "gb-sct" },
-            { id: 7, stage: "小組賽 D組", date: "2026-06-14 06:00", h: "美國", hc: "us", a: "巴拉圭", ac: "py" },
-            { id: 8, stage: "小組賽 D組", date: "2026-06-14 09:00", h: "澳洲", hc: "au", a: "土耳其", ac: "tr" },
-            { id: 9, stage: "小組賽 E組", date: "2026-06-14 21:00", h: "德國", hc: "de", a: "庫拉索", ac: "cw" },
-            { id: 10, stage: "小組賽 E組", date: "2026-06-15 03:00", h: "象牙海岸", hc: "ci", a: "厄瓜多", ac: "ec" },
-            { id: 11, stage: "小組賽 F組", date: "2026-06-15 06:00", h: "荷蘭", hc: "nl", a: "日本", ac: "jp" },
-            { id: 12, stage: "小組賽 F組", date: "2026-06-15 09:00", h: "瑞典", hc: "se", a: "突尼西亞", ac: "tn" },
-            { id: 13, stage: "小組賽 G組", date: "2026-06-15 21:00", h: "比利時", hc: "be", a: "埃及", ac: "eg" },
-            { id: 14, stage: "小組賽 G組", date: "2026-06-16 03:00", h: "紐西蘭", hc: "nz", a: "伊朗", ac: "ir" },
-            { id: 15, stage: "小組賽 H組", date: "2026-06-16 06:00", h: "西班牙", hc: "es", a: "維德角", ac: "cv" },
-            { id: 16, stage: "小組賽 H組", date: "2026-06-16 09:00", h: "沙烏地阿拉伯", hc: "sa", a: "烏拉圭", ac: "uy" },
-            { id: 17, stage: "小組賽 I組", date: "2026-06-16 21:00", h: "法國", hc: "fr", a: "塞內加爾", ac: "sn" },
-            { id: 18, stage: "小組賽 I組", date: "2026-06-17 03:00", h: "伊拉克", hc: "iq", a: "挪威", ac: "no" },
-            { id: 20, stage: "小組賽 J組", date: "2026-06-17 09:00", h: "奧地利", hc: "at", a: "約旦", ac: "jo" },
-            { id: 19, stage: "小組賽 J組", date: "2026-06-17 06:00", h: "阿根廷", hc: "ar", a: "阿爾及利亞", ac: "dz" },
-            { id: 21, stage: "小組賽 K組", date: "2026-06-17 21:00", h: "葡萄牙", hc: "pt", a: "剛果民主共和國", ac: "cd" },
-            { id: 22, stage: "小組賽 K組", date: "2026-06-18 03:00", h: "烏茲別克", hc: "uz", a: "哥倫比亞", ac: "co" },
-            { id: 23, stage: "小組賽 L組", date: "2026-06-18 06:00", h: "英格蘭", hc: "gb-eng", a: "克羅埃西亞", ac: "hr" },
-            { id: 24, stage: "小組賽 L組", date: "2026-06-18 09:00", h: "加納", hc: "gh", a: "巴拿馬", ac: "pa" },
+            { id: 1, stage: "小組賽 A組", date: "2026-06-12 03:00", h: "墨西哥", hc: "mx", a: "南非", ac: "za" },
+            { id: 2, stage: "小組賽 A組", date: "2026-06-12 10:00", h: "南韓", hc: "kr", a: "捷克", ac: "cz" },
+            { id: 3, stage: "小組賽 B組", date: "2026-06-13 03:00", h: "加拿大", hc: "ca", a: "波士尼亞", ac: "ba" },
+            { id: 4, stage: "小組賽 D組", date: "2026-06-13 09:00", h: "美國", hc: "us", a: "巴拉圭", ac: "py" },
+            { id: 5, stage: "小組賽 B組", date: "2026-06-14 03:00", h: "卡達", hc: "qa", a: "瑞士", ac: "ch" },
+            { id: 6, stage: "小組賽 C組", date: "2026-06-14 06:00", h: "巴西", hc: "br", a: "摩洛哥", ac: "ma" },
+            { id: 7, stage: "小組賽 C組", date: "2026-06-14 09:00", h: "海地", hc: "ht", a: "蘇格蘭", ac: "gb-sct" },
+            { id: 8, stage: "小組賽 D組", date: "2026-06-14 12:00", h: "澳洲", hc: "au", a: "土耳其", ac: "tr" },
+            { id: 9, stage: "小組賽 E組", date: "2026-06-15 01:00", h: "德國", hc: "de", a: "庫拉索", ac: "cw" },
+            { id: 10, stage: "小組賽 F組", date: "2026-06-15 04:00", h: "荷蘭", hc: "nl", a: "日本", ac: "jp" },
+            { id: 11, stage: "小組賽 E組", date: "2026-06-15 07:00", h: "象牙海岸", hc: "ci", a: "Ecuador", ac: "ec" },
+            { id: 12, stage: "小組賽 F組", date: "2026-06-15 10:00", h: "瑞典", hc: "se", a: "突尼西亞", ac: "tn" },
+            { id: 13, stage: "小組賽 H組", date: "2026-06-16 00:00", h: "西班牙", hc: "es", a: "維德角", ac: "cv" },
+            { id: 14, stage: "小組賽 G組", date: "2026-06-16 03:00", h: "比利時", hc: "be", a: "埃及", ac: "eg" },
+            { id: 15, stage: "小組賽 H組", date: "2026-06-16 06:00", h: "沙烏地阿拉伯", hc: "sa", a: "烏拉圭", ac: "uy" },
+            { id: 16, stage: "小組賽 G組", date: "2026-06-16 09:00", h: "伊朗", hc: "ir", a: "紐西蘭", ac: "nz" },
+            { id: 17, stage: "小組賽 I組", date: "2026-06-17 03:00", h: "法國", hc: "fr", a: "塞內加爾", ac: "sn" },
+            { id: 18, stage: "小組賽 I組", date: "2026-06-17 06:00", h: "伊拉克", hc: "iq", a: "挪威", ac: "no" },
+            { id: 19, stage: "小組賽 J組", date: "2026-06-17 09:00", h: "阿根廷", hc: "ar", a: "阿爾及利亞", ac: "dz" },
+            { id: 20, stage: "小組賽 J組", date: "2026-06-17 12:00", h: "奧地利", hc: "at", a: "約旦", ac: "jo" },
+            { id: 21, stage: "小組賽 L組", date: "2026-06-18 00:00", h: "加納", hc: "gh", a: "巴拿馬", ac: "pa" },
+            { id: 22, stage: "小組賽 L組", date: "2026-06-18 03:00", h: "英格蘭", hc: "gb-eng", a: "克羅埃西亞", ac: "hr" },
+            { id: 23, stage: "小組賽 K組", date: "2026-06-18 06:00", h: "葡萄牙", hc: "pt", a: "剛果民主共和國", ac: "cd" },
+            { id: 24, stage: "小組賽 K組", date: "2026-06-18 09:00", h: "烏茲別克", hc: "uz", a: "哥倫比亞", ac: "co" },
 
             // --- 小組賽第 2 輪 ---
-            { id: 25, stage: "小組賽 A組", date: "2026-06-18 21:00", h: "捷克", hc: "cz", a: "南非", ac: "za" },
-            { id: 26, stage: "小組賽 A組", date: "2026-06-19 03:00", h: "墨西哥", hc: "mx", a: "南韓", ac: "kr" },
-            { id: 27, stage: "小組賽 B組", date: "2026-06-19 06:00", h: "瑞士", hc: "ch", a: "波士尼亞", ac: "ba" },
-            { id: 28, stage: "小組賽 B組", date: "2026-06-19 09:00", h: "加拿大", hc: "ca", a: "卡達", ac: "qa" },
-            { id: 29, stage: "小組賽 C組", date: "2026-06-19 21:00", h: "蘇格蘭", hc: "gb-sct", a: "摩洛哥", ac: "ma" },
+            { id: 25, stage: "小組賽 A組", date: "2026-06-19 00:00", h: "捷克", hc: "cz", a: "南非", ac: "za" },
+            { id: 26, stage: "小組賽 B組", date: "2026-06-19 03:00", h: "瑞士", hc: "ch", a: "波士尼亞", ac: "ba" },
+            { id: 27, stage: "小組賽 B組", date: "2026-06-19 06:00", h: "加拿大", hc: "ca", a: "卡達", ac: "qa" },
+            { id: 28, stage: "小組賽 A組", date: "2026-06-19 09:00", h: "墨西哥", hc: "mx", a: "南韓", ac: "kr" },
+            { id: 29, stage: "小組賽 C組", date: "2026-06-20 00:00", h: "蘇格蘭", hc: "gb-sct", a: "摩洛哥", ac: "ma" },
             { id: 30, stage: "小組賽 C組", date: "2026-06-20 03:00", h: "巴西", hc: "br", a: "海地", ac: "ht" },
             { id: 31, stage: "小組賽 D組", date: "2026-06-20 06:00", h: "土耳其", hc: "tr", a: "巴拉圭", ac: "py" },
             { id: 32, stage: "小組賽 D組", date: "2026-06-20 09:00", h: "美國", hc: "us", a: "澳洲", ac: "au" },
-            { id: 33, stage: "小組賽 E組", date: "2026-06-20 21:00", h: "德國", hc: "de", a: "象牙海岸", ac: "ci" },
+            { id: 33, stage: "小組賽 E組", date: "2026-06-21 00:00", h: "德國", hc: "de", a: "象牙海岸", ac: "ci" },
             { id: 34, stage: "小組賽 E組", date: "2026-06-21 03:00", h: "厄瓜多", hc: "ec", a: "庫拉索", ac: "cw" },
             { id: 35, stage: "小組賽 F組", date: "2026-06-21 06:00", h: "突尼西亞", hc: "tn", a: "日本", ac: "jp" },
             { id: 36, stage: "小組賽 F組", date: "2026-06-21 09:00", h: "荷蘭", hc: "nl", a: "瑞典", ac: "se" },
-            { id: 37, stage: "小組賽 G組", date: "2026-06-21 21:00", h: "比利時", hc: "be", a: "伊朗", ac: "ir" },
+            { id: 37, stage: "小組賽 G組", date: "2026-06-22 00:00", h: "比利時", hc: "be", a: "伊朗", ac: "ir" },
             { id: 38, stage: "小組賽 G組", date: "2026-06-22 03:00", h: "埃及", hc: "eg", a: "紐西蘭", ac: "nz" },
             { id: 39, stage: "小組賽 H組", date: "2026-06-22 06:00", h: "烏拉圭", hc: "uy", a: "維德角", ac: "cv" },
             { id: 40, stage: "小組賽 H組", date: "2026-06-22 09:00", h: "西班牙", hc: "es", a: "沙烏地阿拉伯", ac: "sa" },
-            { id: 41, stage: "小組賽 I組", date: "2026-06-22 21:00", h: "法國", hc: "fr", a: "伊拉克", ac: "iq" },
+            { id: 41, stage: "小組賽 I組", date: "2026-06-23 00:00", h: "法國", hc: "fr", a: "伊拉克", ac: "iq" },
             { id: 42, stage: "小組賽 I組", date: "2026-06-23 03:00", h: "挪威", hc: "no", a: "塞內加爾", ac: "sn" },
             { id: 43, stage: "小組賽 J組", date: "2026-06-23 06:00", h: "阿根廷", hc: "ar", a: "奧地利", ac: "at" },
             { id: 44, stage: "小組賽 J組", date: "2026-06-23 09:00", h: "約旦", hc: "jo", a: "阿爾及利亞", ac: "dz" },
-            { id: 45, stage: "小組賽 K組", date: "2026-06-23 21:00", h: "葡萄牙", hc: "pt", a: "烏茲別克", ac: "uz" },
-            { id: 46, stage: "小組賽 K組", date: "2026-06-24 03:00", h: "哥倫比亞", hc: "co", a: "剛果民主共和國", ac: "cd" },
-            { id: 47, stage: "小組賽 L組", date: "2026-06-24 06:00", h: "巴拿馬", hc: "pa", a: "克羅埃西亞", ac: "hr" },
-            { id: 48, stage: "小組賽 L組", date: "2026-06-24 09:00", h: "英格蘭", hc: "gb-eng", a: "加納", ac: "gh" },
+            { id: 45, stage: "小組賽 L組", date: "2026-06-24 00:00", h: "巴拿馬", hc: "pa", a: "克羅埃西亞", ac: "hr" },
+            { id: 46, stage: "小組賽 L組", date: "2026-06-24 03:00", h: "英格蘭", hc: "gb-eng", a: "加納", ac: "gh" },
+            { id: 47, stage: "小組賽 K組", date: "2026-06-24 06:00", h: "葡萄牙", hc: "pt", a: "烏茲別克", ac: "uz" },
+            { id: 48, stage: "小組賽 K組", date: "2026-06-24 09:00", h: "哥倫比亞", hc: "co", a: "剛果民主共和國", ac: "cd" },
 
-            // --- 小組賽第 3 輪（出線決定戰）---
-            { id: 49, stage: "小組賽 A組", date: "2026-06-24 21:00", h: "南非", hc: "za", a: "南韓", ac: "kr" },
-            { id: 50, stage: "小組賽 A組", date: "2026-06-24 21:00", h: "捷克", hc: "cz", a: "墨西哥", ac: "mx" },
+            // --- 小組賽第 3 輪 ---
+            { id: 49, stage: "小組賽 A組", date: "2026-06-25 00:00", h: "南非", hc: "za", a: "南韓", ac: "kr" },
+            { id: 50, stage: "小組賽 A組", date: "2026-06-25 00:00", h: "捷克", hc: "cz", a: "墨西哥", ac: "mx" },
             { id: 51, stage: "小組賽 B組", date: "2026-06-25 03:00", h: "波士尼亞", hc: "ba", a: "卡達", ac: "qa" },
             { id: 52, stage: "小組賽 B組", date: "2026-06-25 03:00", h: "瑞士", hc: "ch", a: "加拿大", ac: "ca" },
             { id: 53, stage: "小組賽 C組", date: "2026-06-25 06:00", h: "海地", hc: "ht", a: "摩洛哥", ac: "ma" },
             { id: 54, stage: "小組賽 C組", date: "2026-06-25 06:00", h: "蘇格蘭", hc: "gb-sct", a: "巴西", ac: "br" },
             { id: 55, stage: "小組賽 D組", date: "2026-06-25 09:00", h: "巴拉圭", hc: "py", a: "澳洲", ac: "au" },
             { id: 56, stage: "小組賽 D組", date: "2026-06-25 09:00", h: "土耳其", hc: "tr", a: "美國", ac: "us" },
-            { id: 57, stage: "小組賽 E組", date: "2026-06-25 21:00", h: "庫拉索", hc: "cw", a: "象牙海岸", ac: "ci" },
-            { id: 58, stage: "小組賽 E組", date: "2026-06-25 21:00", h: "厄瓜多", hc: "ec", a: "德國", ac: "de" },
+            { id: 57, stage: "小組賽 E組", date: "2026-06-26 00:00", h: "庫拉索", hc: "cw", a: "象牙海岸", ac: "ci" },
+            { id: 58, stage: "小組賽 E組", date: "2026-06-26 00:00", h: "厄瓜多", hc: "ec", a: "德國", ac: "de" },
             { id: 59, stage: "小組賽 F組", date: "2026-06-26 03:00", h: "日本", hc: "jp", a: "瑞典", ac: "se" },
             { id: 60, stage: "小組賽 F組", date: "2026-06-26 03:00", h: "突尼西亞", hc: "tn", a: "荷蘭", ac: "nl" },
             { id: 61, stage: "小組賽 G組", date: "2026-06-26 06:00", h: "埃及", hc: "eg", a: "伊朗", ac: "ir" },
@@ -104,20 +104,20 @@
             { id: 66, stage: "小組賽 I組", date: "2026-06-26 21:00", h: "挪威", hc: "no", a: "法國", ac: "fr" },
             { id: 67, stage: "小組賽 J組", date: "2026-06-27 03:00", h: "阿爾及利亞", hc: "dz", a: "奧地利", ac: "at" },
             { id: 68, stage: "小組賽 J組", date: "2026-06-27 03:00", h: "約旦", hc: "jo", a: "阿根廷", ac: "ar" },
-            { id: 69, stage: "小組賽 K組", date: "2026-06-27 06:00", h: "剛果民主共和國", hc: "cd", a: "烏茲別克", ac: "uz" },
-            { id: 70, stage: "小組賽 K組", date: "2026-06-27 06:00", h: "哥倫比亞", hc: "co", a: "葡萄牙", ac: "pt" },
-            { id: 71, stage: "小組賽 L組", date: "2026-06-27 09:00", h: "克羅埃西亞", hc: "hr", a: "加納", ac: "gh" },
-            { id: 72, stage: "小組賽 L組", date: "2026-06-27 09:00", h: "巴拿馬", hc: "pa", a: "英格蘭", ac: "gb-eng" },
+            { id: 69, stage: "小組賽 L組", date: "2026-06-27 06:00", h: "克羅埃西亞", hc: "hr", a: "加納", ac: "gh" },
+            { id: 70, stage: "小組賽 L組", date: "2026-06-27 06:00", h: "巴拿馬", hc: "pa", a: "英格蘭", ac: "gb-eng" },
+            { id: 71, stage: "小組賽 K組", date: "2026-06-27 09:00", h: "剛果民主共和國", hc: "cd", a: "烏茲別克", ac: "uz" },
+            { id: 72, stage: "小組賽 K組", date: "2026-06-27 09:00", h: "哥倫比亞", hc: "co", a: "葡萄牙", ac: "pt" },
 
-            // --- 32 強淘汰賽 (Knockout Stage) ---
+            // --- 32 強淘汰賽 ---
             { id: 73, stage: "32強淘汰賽", date: "2026-06-29 03:00", h: "A組第一", hc: "un", a: "C組第二", ac: "un" },
             { id: 74, stage: "32強淘汰賽", date: "2026-06-29 08:00", h: "B組第一", hc: "un", a: "A組第二", ac: "un" },
             { id: 75, stage: "32強淘汰賽", date: "2026-06-30 03:00", h: "C組第一", hc: "un", a: "B組第二", ac: "un" },
             { id: 76, stage: "32強淘汰賽", date: "2026-06-30 08:00", h: "D組第一", hc: "un", a: "F組第二", ac: "un" },
             { id: 77, stage: "32強淘汰賽", date: "2026-07-01 02:00", h: "E組第一", hc: "un", a: "D組第二", ac: "un" },
             { id: 78, stage: "32強淘汰賽", date: "2026-07-01 06:00", h: "F組第一", hc: "un", a: "E組第二", ac: "un" },
-            { id: 80, stage: "32強淘汰賽", date: "2026-07-02 06:00", h: "H組第一", hc: "un", a: "G組第二", ac: "un" },
             { id: 79, stage: "32強淘汰賽", date: "2026-07-02 02:00", h: "G組第一", hc: "un", a: "I組第二", ac: "un" },
+            { id: 80, stage: "32強淘汰賽", date: "2026-07-02 06:00", h: "H組第一", hc: "un", a: "G組第二", ac: "un" },
             { id: 81, stage: "32強淘汰賽", date: "2026-07-03 02:00", h: "I組第一", hc: "un", a: "H組第二", ac: "un" },
             { id: 82, stage: "32強淘汰賽", date: "2026-07-03 06:00", h: "J組第一", hc: "un", a: "L組第二", ac: "un" },
             { id: 83, stage: "32強淘汰賽", date: "2026-07-04 02:00", h: "K組第一", hc: "un", a: "J組第二", ac: "un" },
