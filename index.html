@@ -38,7 +38,6 @@
     <div class="match-grid" id="schedule-container"></div>
 
     <script>
-        // 104場官方校正賽程數據（已將跳轉關鍵字全數優化為繁體中文維基百科精確條目）
         const fullMatches = [
             // --- 小組賽第 1 輪 ---
             { id: 1, stage: "小組賽 A組", date: "2026-06-12 03:00", h: "墨西哥", hc: "mx", a: "南非", ac: "za" },
@@ -204,22 +203,19 @@
             enterScore(matchId, homeTeam, awayTeam);
         }
 
-        // 🌟 核心升級：自動對接繁體中文維基百科行動版 (zh.m.wikipedia)
+        // 🌟 核心防線：完全切斷舊的 SkySports 邏輯，強制對接繁中維基百科
         function goToChineseTeamPage(event, teamName) {
-            event.stopPropagation(); // 阻止事件冒泡
+            event.stopPropagation(); 
             
-            // 如果是尚未確定的淘汰賽標籤，則不進行轉跳
             if (teamName.includes("組") || teamName.includes("場") || teamName.includes("分組")) return;
 
-            // 為了確保精確對準足球隊條目，將國家名稱自動轉化為「國家官方足球隊」格式
             let wikiSearchName = `${teamName}國家足球隊`;
             
-            // 特殊隊名校正（符合繁中維基百科的標準命名規則）
             if (teamName === "美國") wikiSearchName = "美國國家男子足球隊";
             if (teamName === "伊朗") wikiSearchName = "伊朗國家足球隊";
             if (teamName === "南韓") wikiSearchName = "南韓國家足球隊";
 
-            // 生成專屬的手機繁中行動版維基連結
+            // 建立標準繁中條目連結
             const targetUrl = `https://zh.m.wikipedia.org/zh-tw/${encodeURIComponent(wikiSearchName)}`;
             window.open(targetUrl, '_blank');
         }
