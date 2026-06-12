@@ -11,7 +11,7 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; color: #333; padding: 20px; margin: 0; }
         
-        /* 左上角下拉式選單 */
+        /* 控制列與下拉選單 */
         .control-bar { max-width: 1400px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: flex-start; }
         .view-selector { padding: 8px 16px; font-size: 16px; font-weight: bold; color: #1a365d; background: white; border: 2px solid #1a365d; border-radius: 8px; cursor: pointer; outline: none; }
         
@@ -20,9 +20,19 @@
         .view-section { display: none; }
         .view-section.active { display: block; }
 
+        /* 🌟 新增：篩選器專用現代化排版 🌟 */
+        .filter-panel { max-width: 1400px; margin: 0 auto 20px auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .filter-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; align-items: center; }
+        .filter-btn { padding: 6px 14px; font-size: 13px; font-weight: bold; background: #edf2f7; color: #4a5568; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .filter-btn:hover { background: #e2e8f0; }
+        .filter-btn.active { background: #1a365d; color: white; }
+        .group-btn-container { display: flex; flex-wrap: wrap; gap: 6px; }
+        .group-btn { padding: 4px 10px; font-size: 12px; font-weight: bold; background: #f7fafc; color: #718096; border: 1px solid #e2e8f0; border-radius: 4px; cursor: pointer; }
+        .group-btn.active { background: #3182ce; color: white; border-color: #3182ce; }
+
         /* 賽程表卡片樣式 */
         .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
-        .match-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #1a365d; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s; }
+        .match-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #1a365d; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s; position: relative; }
         .match-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
         .match-meta { display: flex; justify-content: space-between; font-size: 11px; color: #718096; margin-bottom: 12px; font-weight: bold; pointer-events: none; }
         .stage-tag { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
@@ -33,7 +43,12 @@
         .team-name { font-size: 14px; font-weight: 600; color: #2d3748; }
         .score-display { font-size: 20px; font-weight: 800; color: #1a365d; min-width: 50px; text-align: center; background: #f0f4f8; padding: 4px 8px; border-radius: 6px; }
         .vs { font-size: 12px; color: #a0aec0; font-weight: 700; padding: 0 10px; }
-        .match-time { font-size: 12px; color: #1a365d; background: #e1e8f5; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; margin-top: auto; pointer-events: none; }
+        
+        /* 星星最愛按鈕與卡片底部排版 */
+        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .match-time { font-size: 12px; color: #1a365d; background: #e1e8f5; text-align: center; padding: 6px 10px; border-radius: 6px; font-weight: 700; pointer-events: none; flex-grow: 1; }
+        .favorite-star { font-size: 20px; color: #cbd5e0; cursor: pointer; padding-left: 10px; transition: color 0.2s; }
+        .favorite-star.active { color: #f6ad55; }
 
         /* 積分榜樣式 */
         .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
@@ -46,7 +61,7 @@
         .t-flag { width: 20px; height: 13px; object-fit: cover; border-radius: 2px; }
         .highlight-row { background: #f7fafc; font-weight: bold; color: #1a365d; }
 
-        /* 🌟 淘汰賽樹狀圖專用現代化排版 (Bracket View) */
+        /* 淘汰賽樹狀圖樣式 */
         .bracket-container { max-width: 1400px; margin: 0 auto; overflow-x: auto; padding-bottom: 20px; }
         .bracket-columns { display: flex; gap: 30px; min-width: 1200px; justify-content: space-between; }
         .bracket-column { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 15px; }
@@ -64,6 +79,34 @@
     </div>
 
     <div id="schedule-view" class="view-section active">
+        
+        <div class="filter-panel">
+            <div class="filter-row">
+                <span style="font-size:13px; font-weight:bold; color:#4a5568;">快速篩選：</span>
+                <button id="btn-filter-all" class="filter-btn active" onclick="setFilterMode('all')">全部賽程</button>
+                <button id="btn-filter-today" class="filter-btn" onclick="setFilterMode('today')">📅 只看今天比賽</button>
+                <button id="btn-filter-fav" class="filter-btn" onclick="setFilterMode('fav')">⭐ 我的最愛球隊</button>
+            </div>
+            <div class="filter-row">
+                <span style="font-size:13px; font-weight:bold; color:#4a5568;">小組快選：</span>
+                <div class="group-btn-container">
+                    <button id="gbtn-all" class="group-btn active" onclick="setGroupFilter('all')">全部</button>
+                    <button id="gbtn-A" class="group-btn" onclick="setGroupFilter('A')">A組</button>
+                    <button id="gbtn-B" class="group-btn" onclick="setGroupFilter('B')">B組</button>
+                    <button id="gbtn-C" class="group-btn" onclick="setGroupFilter('C')">C組</button>
+                    <button id="gbtn-D" class="group-btn" onclick="setGroupFilter('D')">D組</button>
+                    <button id="gbtn-E" class="group-btn" onclick="setGroupFilter('E')">E組</button>
+                    <button id="gbtn-F" class="group-btn" onclick="setGroupFilter('F')">F組</button>
+                    <button id="gbtn-G" class="group-btn" onclick="setGroupFilter('G')">G組</button>
+                    <button id="gbtn-H" class="group-btn" onclick="setGroupFilter('H')">H組</button>
+                    <button id="gbtn-I" class="group-btn" onclick="setGroupFilter('I')">I組</button>
+                    <button id="gbtn-J" class="group-btn" onclick="setGroupFilter('J')">J組</button>
+                    <button id="gbtn-K" class="group-btn" onclick="setGroupFilter('K')">K組</button>
+                    <button id="gbtn-L" class="group-btn" onclick="setGroupFilter('L')">L組</button>
+                </div>
+            </div>
+        </div>
+
         <h1>🏆 2026 FIFA 世界盃完整賽程 (台灣時間)</h1>
         <div class="match-grid" id="schedule-container"></div>
     </div>
@@ -161,7 +204,7 @@
             { id: 71, group: "K", stage: "小組賽 K組", date: "2026-06-27 09:00", h: "剛果民主共和國", hc: "cd", a: "烏茲別克", ac: "uz" },
             { id: 72, group: "K", stage: "小組賽 K組", date: "2026-06-27 09:00", h: "哥倫比亞", hc: "co", a: "葡萄牙", ac: "pt" },
 
-            // --- 32 強淘汰賽 (動態關聯規則寫在邏輯裡) ---
+            // --- 32 強淘汰賽 ---
             { id: 73, type: "R32", stage: "32強-場次73", date: "2026-06-29 03:00", hRule: {type:"group",g:"A",r:1}, aRule: {type:"group",g:"C",r:2} },
             { id: 74, type: "R32", stage: "32強-場次74", date: "2026-06-29 08:00", hRule: {type:"group",g:"B",r:1}, aRule: {type:"group",g:"A",r:2} },
             { id: 75, type: "R32", stage: "32強-場次75", date: "2026-06-30 03:00", hRule: {type:"group",g:"C",r:1}, aRule: {type:"group",g:"B",r:2} },
@@ -185,16 +228,21 @@
             { id: 101, type: "SF", stage: "準決賽-場次101", date: "2026-07-15 03:00", hRule: {type:"match",id:97}, aRule: {type:"match",id:98} },
 
             // --- 總決賽 ---
-            { id: 104, type: "FN", stage: "冠軍總決賽", date: "2026-07-20 03:00", hRule: {type:"match",id:101}, aRule: {type:"match",id:101} } 
-            // 註：為保持範例簡潔，樹狀圖展示核心上半區對戰晉級鍊。
+            { id: 104, type: "FN", stage: "冠軍總決賽", date: "2026-07-20 03:00", hRule: {type:"match",id:101}, aRule: {type:"match",id:101} }
         ];
 
+        // 讀取快取比分資料與我的最愛清單
         const savedScores = JSON.parse(localStorage.getItem('worldcup_scores')) || {};
+        let favoriteTeams = JSON.parse(localStorage.getItem('worldcup_favorites')) || [];
         let computedTeamsGlobal = {}; 
+
+        // 🌟 篩選器全域狀態控制
+        let currentFilterMode = 'all'; // 'all', 'today', 'fav'
+        let currentGroupFilter = 'all'; // 'all', 'A', 'B', 'C'...'L'
 
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            calculateStandingsData(); // 每當換頁，核心資料庫重新動態運算一次
+            calculateStandingsData();
 
             if(viewName === 'schedule') {
                 document.getElementById('schedule-view').classList.add('active');
@@ -208,7 +256,36 @@
             }
         }
 
-        // 高階大數據洗牌算法：計算小組名次
+        // 🌟 處理快速篩選模式（全部、今天、最愛）
+        function setFilterMode(mode) {
+            currentFilterMode = mode;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-filter-${mode}`).classList.add('active');
+            renderSchedule();
+        }
+
+        // 🌟 處理小組快速切換
+        function setGroupFilter(group) {
+            currentGroupFilter = group;
+            document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`gbtn-${group}`).classList.add('active');
+            renderSchedule();
+        }
+
+        // 🌟 切換我的最愛星星狀態
+        function toggleFavorite(event, teamName) {
+            event.stopPropagation(); // 阻止卡片點擊事件
+            if (teamName.includes("組") || teamName.includes("場") || teamName.includes("勝者") || teamName.includes("未定")) return;
+
+            if (favoriteTeams.includes(teamName)) {
+                favoriteTeams = favoriteTeams.filter(t => t !== teamName);
+            } else {
+                favoriteTeams.push(teamName);
+            }
+            localStorage.setItem('worldcup_favorites', JSON.stringify(favoriteTeams));
+            renderSchedule();
+        }
+
         function calculateStandingsData() {
             const db = {};
             fullMatches.forEach(m => {
@@ -234,78 +311,99 @@
                 db[m.h].gd = db[m.h].gf - db[m.h].ga;
                 db[m.a].gd = db[m.a].gf - db[m.a].ga;
             });
-
             computedTeamsGlobal = db;
         }
 
-        // 解析動態晉級隊伍名稱與國旗
         function resolveTeam(rule) {
             if (!rule) return { name: "未定", code: "un" };
-            
-            // 規則一：從分組積分榜抓前兩名
             if (rule.type === "group") {
                 const groupTeams = Object.values(computedTeamsGlobal).filter(t => t.group === rule.g);
                 if(groupTeams.length === 0) return { name: `${rule.g}組第${rule.r}`, code: "un" };
-                
                 groupTeams.sort((x,y) => (y.pts !== x.pts) ? (y.pts - x.pts) : (y.gd !== x.gd) ? (y.gd - x.gd) : (y.gf - x.gf));
                 const target = groupTeams[rule.r - 1];
                 return target ? { name: target.name, code: target.code } : { name: `${rule.g}組第${rule.r}`, code: "un" };
             }
-            
-            // 規則二：從上一輪淘汰賽場次抓贏家
             if (rule.type === "match") {
                 const parentMatch = fullMatches.find(m => m.id === rule.id);
                 const score = savedScores[rule.id];
                 if (!parentMatch || !score) return { name: `場次${rule.id}勝者`, code: "un" };
-                
                 const hTeam = resolveTeam(parentMatch.hRule || {type:"static",n:parentMatch.h,c:parentMatch.hc});
                 const aTeam = resolveTeam(parentMatch.aRule || {type:"static",n:parentMatch.a,c:parentMatch.ac});
-                
                 if (score.hScore > score.aScore) return hTeam;
                 if (score.hScore < score.aScore) return aTeam;
                 return { name: `場次${rule.id}平手`, code: "un" };
             }
-
             if (rule.type === "static") return { name: rule.n, code: rule.c };
             return { name: "未定", code: "un" };
         }
 
-        // 建立完整動態渲染清單
         function getMatchDisplayData(m) {
             let hName = m.h, hCode = m.hc, aName = m.a, aCode = m.ac;
             if (m.hRule) { const r = resolveTeam(m.hRule); hName = r.name; hCode = r.code; }
             if (m.aRule) { const r = resolveTeam(m.aRule); aName = r.name; aCode = r.code; }
-            return { id: m.id, stage: m.stage, date: m.date, hName, hCode, aName, aCode };
+            return { id: m.id, group: m.group || "淘汰賽", stage: m.stage, date: m.date, hName, hCode, aName, aCode };
         }
 
         function renderSchedule() {
             const container = document.getElementById('schedule-container');
-            container.innerHTML = fullMatches.map(m => {
+            
+            // 🌟 執行核心篩選引擎過濾資料
+            const filteredMatches = fullMatches.filter(m => {
+                const d = getMatchDisplayData(m);
+                
+                // 1. 小組快捷按鈕過濾
+                if (currentGroupFilter !== 'all' && m.group !== currentGroupFilter) return false;
+                
+                // 2. 快速篩選欄位過濾
+                if (currentFilterMode === 'today') {
+                    // 自動對準今天日期：2026-06-12
+                    return d.date.startsWith("2026-06-12");
+                }
+                if (currentFilterMode === 'fav') {
+                    // 如果主隊或客隊有任一隊包含在我的最愛陣列中
+                    return favoriteTeams.includes(d.hName) || favoriteTeams.includes(d.aName);
+                }
+                return true;
+            });
+
+            if (filteredMatches.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:#999; padding: 40px; font-weight:bold;">沒有符合篩選條件的比賽場次。</div>`;
+                return;
+            }
+
+            container.innerHTML = filteredMatches.map(m => {
                 const d = getMatchDisplayData(m);
                 const score = savedScores[m.id];
                 const middle = score ? `<div class="score-display">${score.hScore} - ${score.aScore}</div>` : `<div class="vs">VS</div>`;
+                
+                // 判斷星星是否亮起
+                const isHomeFav = favoriteTeams.includes(d.hName) ? 'active' : '';
+                const isAwayFav = favoriteTeams.includes(d.aName) ? 'active' : '';
+
                 return `
                     <div class="match-card" onclick="handleCardClick(event, ${d.id}, '${d.hName}', '${d.aName}')">
                         <div class="match-meta"><span>場次 ${d.id}</span><span class="stage-tag">${d.stage}</span></div>
                         <div class="teams-area">
                             <div class="team" onclick="goToChineseTeamPage(event, '${d.hName}')">
                                 <img src="https://flagcdn.com/w40/${d.hCode}.png" class="flag">
-                                <span class="team-name">${d.hName}</span>
+                                <span class="team-name">${d.hName} <span class="favorite-star ${isHomeFav}" onclick="toggleFavorite(event, '${d.hName}')">★</span></span>
                             </div>
                             ${middle}
                             <div class="team" onclick="goToChineseTeamPage(event, '${d.aName}')">
                                 <img src="https://flagcdn.com/w40/${d.aCode}.png" class="flag">
-                                <span class="team-name">${d.aName}</span>
+                                <span class="team-name">${d.aName} <span class="favorite-star ${isAwayFav}" onclick="toggleFavorite(event, '${d.aName}')">★</span></span>
                             </div>
                         </div>
-                        <div class="match-time">📅 ${d.date}</div>
+                        <div class="card-footer">
+                            <div class="match-time">📅 ${d.date}</div>
+                        </div>
                     </div>
                 `;
             }).join('');
         }
 
         function handleCardClick(event, matchId, homeTeam, awayTeam) {
-            if (event.target.closest('.team')) return;
+            if (event.target.closest('.team') || event.target.closest('.favorite-star')) return;
             enterScore(matchId, homeTeam, awayTeam);
         }
 
@@ -327,19 +425,16 @@
             savedScores[matchId] = { hScore: parseInt(hScoreInput, 10), aScore: parseInt(aScoreInput, 10) };
             localStorage.setItem('worldcup_scores', JSON.stringify(savedScores));
             calculateStandingsData();
-            
-            // 判斷目前在哪個分頁，完成後就地重整
-            const currentView = document.querySelector('.view-selector').value;
-            if(currentView === 'schedule') renderSchedule();
-            if(currentView === 'bracket') renderBracketView();
+            renderSchedule();
         }
 
         function renderStandingsTable() {
-            const groups = ["A", "B", "C", "D", "E", "F", "G", "H"];
+            const groups = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
             const container = document.getElementById('standings-container');
             let html = "";
             groups.forEach(gName => {
                 const groupTeams = Object.values(computedTeamsGlobal).filter(t => t.group === gName);
+                if(groupTeams.length === 0) return;
                 groupTeams.sort((x,y) => (y.pts !== x.pts) ? (y.pts - x.pts) : (y.gd !== x.gd) ? (y.gd - x.gd) : (y.gf - x.gf));
                 html += `
                     <div class="group-table-card">
@@ -361,7 +456,6 @@
             container.innerHTML = html;
         }
 
-        // 🌟 淘汰賽樹狀圖渲染邏輯 (按階段歸類並垂直排版)
         function renderBracketView() {
             const container = document.getElementById('bracket-container-raw');
             const stages = [
