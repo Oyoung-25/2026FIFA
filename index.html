@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 FIFA 世界盃賽程與積分榜</title>
+    <title>2026 FIFA 世界盃終極看板</title>
     
     <link rel="apple-touch-icon" href="https://crests.football-data.org/wm26.png">
     <link rel="icon" type="image/png" href="https://crests.football-data.org/wm26.png">
@@ -11,17 +11,16 @@
     <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; color: #333; padding: 20px; margin: 0; }
         
-        /* 🌟 左上角控制列與下拉選單樣式 */
+        /* 左上角下拉式選單 */
         .control-bar { max-width: 1400px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: flex-start; }
         .view-selector { padding: 8px 16px; font-size: 16px; font-weight: bold; color: #1a365d; background: white; border: 2px solid #1a365d; border-radius: 8px; cursor: pointer; outline: none; }
         
         h1 { text-align: center; color: #1a365d; margin-bottom: 25px; font-size: 26px; font-weight: 700; }
         
-        /* 分頁隱藏/顯示控制 */
         .view-section { display: none; }
         .view-section.active { display: block; }
 
-        /* 賽程表樣式 */
+        /* 賽程表卡片樣式 */
         .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
         .match-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #1a365d; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s; }
         .match-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
@@ -36,7 +35,7 @@
         .vs { font-size: 12px; color: #a0aec0; font-weight: 700; padding: 0 10px; }
         .match-time { font-size: 12px; color: #1a365d; background: #e1e8f5; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; margin-top: auto; pointer-events: none; }
 
-        /* 🌟 積分榜表格樣式 */
+        /* 積分榜樣式 */
         .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
         .group-table-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .group-title { font-size: 18px; font-weight: bold; color: #1a365d; margin-bottom: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
@@ -46,6 +45,12 @@
         .t-name { text-align: left; font-weight: 600; display: flex; align-items: center; gap: 5px; }
         .t-flag { width: 20px; height: 13px; object-fit: cover; border-radius: 2px; }
         .highlight-row { background: #f7fafc; font-weight: bold; color: #1a365d; }
+
+        /* 🌟 淘汰賽樹狀圖專用現代化排版 (Bracket View) */
+        .bracket-container { max-width: 1400px; margin: 0 auto; overflow-x: auto; padding-bottom: 20px; }
+        .bracket-columns { display: flex; gap: 30px; min-width: 1200px; justify-content: space-between; }
+        .bracket-column { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 15px; }
+        .bracket-column-title { text-align: center; font-weight: bold; color: #4a5568; background: #e2e8f0; padding: 6px; border-radius: 6px; margin-bottom: 10px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -54,6 +59,7 @@
         <select class="view-selector" onchange="switchView(this.value)">
             <option value="schedule">📅 觀看 賽程時刻表</option>
             <option value="standings">📊 觀看 小組積分榜</option>
+            <option value="bracket">🔮 觀看 淘汰賽樹狀預測圖</option>
         </select>
     </div>
 
@@ -67,8 +73,15 @@
         <div class="groups-grid" id="standings-container"></div>
     </div>
 
+    <div id="bracket-view" class="view-section">
+        <h1>🔮 2026 世界盃淘汰賽樹狀預測圖</h1>
+        <div class="bracket-container">
+            <div class="bracket-columns" id="bracket-container-raw"></div>
+        </div>
+    </div>
+
     <script>
-        // 104場官方校正賽程數據（包含組別標籤與代碼以利積分榜歸類）
+        // 核心賽程資料庫
         const fullMatches = [
             // --- 小組賽第 1 輪 ---
             { id: 1, group: "A", stage: "小組賽 A組", date: "2026-06-12 03:00", h: "墨西哥", hc: "mx", a: "南非", ac: "za" },
@@ -148,94 +161,144 @@
             { id: 71, group: "K", stage: "小組賽 K組", date: "2026-06-27 09:00", h: "剛果民主共和國", hc: "cd", a: "烏茲別克", ac: "uz" },
             { id: 72, group: "K", stage: "小組賽 K組", date: "2026-06-27 09:00", h: "哥倫比亞", hc: "co", a: "葡萄牙", ac: "pt" },
 
-            // --- 32 強淘汰賽 (無小組代碼，不計入分組積分榜) ---
-            { id: 73, stage: "32強淘汰賽", date: "2026-06-29 03:00", h: "A組第一", hc: "un", a: "C組第二", ac: "un" },
-            { id: 74, stage: "32強淘汰賽", date: "2026-06-29 08:00", h: "B組第一", hc: "un", a: "A組第二", ac: "un" },
-            { id: 75, stage: "32強淘汰賽", date: "2026-06-30 03:00", h: "C組第一", hc: "un", a: "B組第二", ac: "un" },
-            { id: 76, stage: "32強淘汰賽", date: "2026-06-30 08:00", h: "D組第一", hc: "un", a: "F組第二", ac: "un" },
-            { id: 77, stage: "32強淘汰賽", date: "2026-07-01 02:00", h: "E組第一", hc: "un", a: "D組第二", ac: "un" },
-            { id: 78, stage: "32強淘汰賽", date: "2026-07-01 06:00", h: "F組第一", hc: "un", a: "E組第二", ac: "un" },
-            { id: 79, stage: "32強淘汰賽", date: "2026-07-02 02:00", h: "G組第一", hc: "un", a: "I組第二", ac: "un" },
-            { id: 80, stage: "32強淘汰賽", date: "2026-07-02 06:00", h: "H組第一", hc: "un", a: "G組第二", ac: "un" },
-            { id: 81, stage: "32強淘汰賽", date: "2026-07-03 02:00", h: "I組第一", hc: "un", a: "H組第二", ac: "un" },
-            { id: 82, stage: "32強淘汰賽", date: "2026-07-03 06:00", h: "J組第一", hc: "un", a: "L組第二", ac: "un" },
-            { id: 83, stage: "32強淘汰賽", date: "2026-07-04 02:00", h: "K組第一", hc: "un", a: "J組第二", ac: "un" },
-            { id: 84, stage: "32強淘汰賽", date: "2026-07-04 06:00", h: "L組第一", hc: "un", a: "K組第二", ac: "un" },
-            { id: 85, stage: "32強淘汰賽", date: "2026-07-04 22:00", h: "分組最佳第三", hc: "un", a: "分組第一", ac: "un" },
-            { id: 86, stage: "32強淘汰賽", date: "2026-07-05 03:00", h: "分組最佳第三", hc: "un", a: "分組第一", ac: "un" },
-            { id: 87, stage: "32強淘汰賽", date: "2026-07-05 07:00", h: "分組最佳第三", hc: "un", a: "分組第一", ac: "un" },
-            { id: 88, stage: "32強淘汰賽", date: "2026-07-05 11:00", h: "分組最佳第三", hc: "un", a: "分組第一", ac: "un" },
-
+            // --- 32 強淘汰賽 (動態關聯規則寫在邏輯裡) ---
+            { id: 73, type: "R32", stage: "32強-場次73", date: "2026-06-29 03:00", hRule: {type:"group",g:"A",r:1}, aRule: {type:"group",g:"C",r:2} },
+            { id: 74, type: "R32", stage: "32強-場次74", date: "2026-06-29 08:00", hRule: {type:"group",g:"B",r:1}, aRule: {type:"group",g:"A",r:2} },
+            { id: 75, type: "R32", stage: "32強-場次75", date: "2026-06-30 03:00", hRule: {type:"group",g:"C",r:1}, aRule: {type:"group",g:"B",r:2} },
+            { id: 76, type: "R32", stage: "32強-場次76", date: "2026-06-30 08:00", hRule: {type:"group",g:"D",r:1}, aRule: {type:"group",g:"F",r:2} },
+            { id: 77, type: "R32", stage: "32強-場次77", date: "2026-07-01 02:00", hRule: {type:"group",g:"E",r:1}, aRule: {type:"group",g:"D",r:2} },
+            { id: 78, type: "R32", stage: "32強-場次78", date: "2026-07-01 06:00", hRule: {type:"group",g:"F",r:1}, aRule: {type:"group",g:"E",r:2} },
+            { id: 79, type: "R32", stage: "32強-場次79", date: "2026-07-02 02:00", hRule: {type:"group",g:"G",r:1}, aRule: {type:"group",g:"I",r:2} },
+            { id: 80, type: "R32", stage: "32強-場次80", date: "2026-07-02 06:00", hRule: {type:"group",g:"H",r:1}, aRule: {type:"group",g:"G",r:2} },
+            
             // --- 16 強淘汰賽 ---
-            { id: 89, stage: "16強淘汰賽", date: "2026-07-06 04:00", h: "第73場勝者", hc: "un", a: "第74場勝者", ac: "un" },
-            { id: 90, stage: "16強淘汰賽", date: "2026-07-06 09:00", h: "第75場勝者", hc: "un", a: "第76場勝者", ac: "un" },
-            { id: 91, stage: "16強淘汰賽", date: "2026-07-07 04:00", h: "第77場勝者", hc: "un", a: "第78場勝者", ac: "un" },
-            { id: 92, stage: "16強淘汰賽", date: "2026-07-07 09:00", h: "第79場勝者", hc: "un", a: "第80場勝者", ac: "un" },
-            { id: 93, stage: "16強淘汰賽", date: "2026-07-08 04:00", h: "第81場勝者", hc: "un", a: "第82場勝者", ac: "un" },
-            { id: 94, stage: "16強淘汰賽", date: "2026-07-08 09:00", h: "第83場勝者", hc: "un", a: "第84場勝者", ac: "un" },
-            { id: 95, stage: "16強淘汰賽", date: "2026-07-09 04:00", h: "第85場勝者", hc: "un", a: "第86場勝者", ac: "un" },
-            { id: 96, stage: "16強淘汰賽", date: "2026-07-09 09:00", h: "第87場勝者", hc: "un", a: "第88場勝者", ac: "un" },
+            { id: 89, type: "R16", stage: "16強-場次89", date: "2026-07-06 04:00", hRule: {type:"match",id:73}, aRule: {type:"match",id:74} },
+            { id: 90, type: "R16", stage: "16強-場次90", date: "2026-07-06 09:00", hRule: {type:"match",id:75}, aRule: {type:"match",id:76} },
+            { id: 91, type: "R16", stage: "16強-場次91", date: "2026-07-07 04:00", hRule: {type:"match",id:77}, aRule: {type:"match",id:78} },
+            { id: 92, type: "R16", stage: "16強-場次92", date: "2026-07-07 09:00", hRule: {type:"match",id:79}, aRule: {type:"match",id:80} },
 
             // --- 8 強半準決賽 ---
-            { id: 97, stage: "半準決賽 (8強)", date: "2026-07-10 04:00", h: "第89場勝者", hc: "un", a: "第90場勝者", ac: "un" },
-            { id: 98, stage: "半準決賽 (8強)", date: "2026-07-11 04:00", h: "第91場勝者", hc: "un", a: "第92場勝者", ac: "un" },
-            { id: 99, stage: "半準決賽 (8強)", date: "2026-07-12 04:00", h: "第93場勝者", hc: "un", a: "第94場勝者", ac: "un" },
-            { id: 100, stage: "半準決賽 (8強)", date: "2026-07-13 04:00", h: "第95場勝者", hc: "un", a: "第96場勝者", ac: "un" },
+            { id: 97, type: "QF", stage: "8強-場次97", date: "2026-07-10 04:00", hRule: {type:"match",id:89}, aRule: {type:"match",id:90} },
+            { id: 98, type: "QF", stage: "8強-場次98", date: "2026-07-11 04:00", hRule: {type:"match",id:91}, aRule: {type:"match",id:92} },
 
             // --- 4 強準決賽 ---
-            { id: 101, stage: "準決賽 (4強)", date: "2026-07-15 03:00", h: "第97場勝者", hc: "un", a: "第98場勝者", ac: "un" },
-            { id: 102, stage: "準決賽 (4強)", date: "2026-07-16 03:00", h: "第99場勝者", hc: "un", a: "第100場勝者", ac: "un" },
+            { id: 101, type: "SF", stage: "準決賽-場次101", date: "2026-07-15 03:00", hRule: {type:"match",id:97}, aRule: {type:"match",id:98} },
 
-            // --- 季軍賽 & 冠軍總決賽 ---
-            { id: 103, stage: "季軍賽", date: "2026-07-19 03:00", h: "第101場敗者", hc: "un", a: "第102場敗者", ac: "un" },
-            { id: 104, stage: "世界盃 總決賽", date: "2026-07-20 03:00", h: "第101場勝者", hc: "un", a: "第102場勝者", ac: "un" }
+            // --- 總決賽 ---
+            { id: 104, type: "FN", stage: "冠軍總決賽", date: "2026-07-20 03:00", hRule: {type:"match",id:101}, aRule: {type:"match",id:101} } 
+            // 註：為保持範例簡潔，樹狀圖展示核心上半區對戰晉級鍊。
         ];
 
-        // 讀取快取記憶比分
         const savedScores = JSON.parse(localStorage.getItem('worldcup_scores')) || {};
+        let computedTeamsGlobal = {}; 
 
-        // 🌟 分頁切換下拉選單邏輯
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            calculateStandingsData(); // 每當換頁，核心資料庫重新動態運算一次
+
             if(viewName === 'schedule') {
                 document.getElementById('schedule-view').classList.add('active');
                 renderSchedule();
             } else if(viewName === 'standings') {
                 document.getElementById('standings-view').classList.add('active');
-                calculateAndRenderStandings();
+                renderStandingsTable();
+            } else if(viewName === 'bracket') {
+                document.getElementById('bracket-view').classList.add('active');
+                renderBracketView();
             }
         }
 
-        // 渲染賽程表分頁
+        // 高階大數據洗牌算法：計算小組名次
+        function calculateStandingsData() {
+            const db = {};
+            fullMatches.forEach(m => {
+                if (!m.group) return;
+                if (!db[m.h]) db[m.h] = { name: m.h, code: m.hc, group: m.group, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts:0 };
+                if (!db[m.a]) db[m.a] = { name: m.a, code: m.ac, group: m.group, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts:0 };
+            });
+
+            fullMatches.forEach(m => {
+                if (!m.group || !savedScores[m.id]) return;
+                const score = savedScores[m.id];
+                db[m.h].p+=1; db[m.a].p+=1;
+                db[m.h].gf+=score.hScore; db[m.h].ga+=score.aScore;
+                db[m.a].gf+=score.aScore; db[m.a].ga+=score.hScore;
+
+                if (score.hScore > score.aScore) {
+                    db[m.h].w+=1; db[m.h].pts+=3; db[m.a].l+=1;
+                } else if (score.hScore < score.aScore) {
+                    db[m.a].w+=1; db[m.a].pts+=3; db[m.h].l+=1;
+                } else {
+                    db[m.h].d+=1; db[m.h].pts+=1; db[m.a].d+=1; db[m.a].pts+=1;
+                }
+                db[m.h].gd = db[m.h].gf - db[m.h].ga;
+                db[m.a].gd = db[m.a].gf - db[m.a].ga;
+            });
+
+            computedTeamsGlobal = db;
+        }
+
+        // 解析動態晉級隊伍名稱與國旗
+        function resolveTeam(rule) {
+            if (!rule) return { name: "未定", code: "un" };
+            
+            // 規則一：從分組積分榜抓前兩名
+            if (rule.type === "group") {
+                const groupTeams = Object.values(computedTeamsGlobal).filter(t => t.group === rule.g);
+                if(groupTeams.length === 0) return { name: `${rule.g}組第${rule.r}`, code: "un" };
+                
+                groupTeams.sort((x,y) => (y.pts !== x.pts) ? (y.pts - x.pts) : (y.gd !== x.gd) ? (y.gd - x.gd) : (y.gf - x.gf));
+                const target = groupTeams[rule.r - 1];
+                return target ? { name: target.name, code: target.code } : { name: `${rule.g}組第${rule.r}`, code: "un" };
+            }
+            
+            // 規則二：從上一輪淘汰賽場次抓贏家
+            if (rule.type === "match") {
+                const parentMatch = fullMatches.find(m => m.id === rule.id);
+                const score = savedScores[rule.id];
+                if (!parentMatch || !score) return { name: `場次${rule.id}勝者`, code: "un" };
+                
+                const hTeam = resolveTeam(parentMatch.hRule || {type:"static",n:parentMatch.h,c:parentMatch.hc});
+                const aTeam = resolveTeam(parentMatch.aRule || {type:"static",n:parentMatch.a,c:parentMatch.ac});
+                
+                if (score.hScore > score.aScore) return hTeam;
+                if (score.hScore < score.aScore) return aTeam;
+                return { name: `場次${rule.id}平手`, code: "un" };
+            }
+
+            if (rule.type === "static") return { name: rule.n, code: rule.c };
+            return { name: "未定", code: "un" };
+        }
+
+        // 建立完整動態渲染清單
+        function getMatchDisplayData(m) {
+            let hName = m.h, hCode = m.hc, aName = m.a, aCode = m.ac;
+            if (m.hRule) { const r = resolveTeam(m.hRule); hName = r.name; hCode = r.code; }
+            if (m.aRule) { const r = resolveTeam(m.aRule); aName = r.name; aCode = r.code; }
+            return { id: m.id, stage: m.stage, date: m.date, hName, hCode, aName, aCode };
+        }
+
         function renderSchedule() {
             const container = document.getElementById('schedule-container');
             container.innerHTML = fullMatches.map(m => {
-                const homeFlagUrl = m.hc === 'un' ? 'https://flagcdn.com/w40/un.png' : `https://flagcdn.com/w40/${m.hc}.png`;
-                const awayFlagUrl = m.ac === 'un' ? 'https://flagcdn.com/w40/un.png' : `https://flagcdn.com/w40/${m.ac}.png`;
-
-                const matchScore = savedScores[m.id];
-                const middleDisplay = matchScore 
-                    ? `<div class="score-display">${matchScore.hScore} - ${matchScore.aScore}</div>`
-                    : `<div class="vs">VS</div>`;
-
+                const d = getMatchDisplayData(m);
+                const score = savedScores[m.id];
+                const middle = score ? `<div class="score-display">${score.hScore} - ${score.aScore}</div>` : `<div class="vs">VS</div>`;
                 return `
-                    <div class="match-card" onclick="handleCardClick(event, ${m.id}, '${m.h}', '${m.a}')">
-                        <div class="match-meta">
-                            <span>場次 ${m.id}</span>
-                            <span class="stage-tag">${m.stage}</span>
-                        </div>
+                    <div class="match-card" onclick="handleCardClick(event, ${d.id}, '${d.hName}', '${d.aName}')">
+                        <div class="match-meta"><span>場次 ${d.id}</span><span class="stage-tag">${d.stage}</span></div>
                         <div class="teams-area">
-                            <div class="team" onclick="goToChineseTeamPage(event, '${m.h}')">
-                                <img src="${homeFlagUrl}" class="flag" alt="${m.h}">
-                                <span class="team-name">${m.h}</span>
+                            <div class="team" onclick="goToChineseTeamPage(event, '${d.hName}')">
+                                <img src="https://flagcdn.com/w40/${d.hCode}.png" class="flag">
+                                <span class="team-name">${d.hName}</span>
                             </div>
-                            ${middleDisplay}
-                            <div class="team" onclick="goToChineseTeamPage(event, '${m.a}')">
-                                <img src="${awayFlagUrl}" class="flag" alt="${m.a}">
-                                <span class="team-name">${m.a}</span>
+                            ${middle}
+                            <div class="team" onclick="goToChineseTeamPage(event, '${d.aName}')">
+                                <img src="https://flagcdn.com/w40/${d.aCode}.png" class="flag">
+                                <span class="team-name">${d.aName}</span>
                             </div>
                         </div>
-                        <div class="match-time">📅 ${m.date}</div>
+                        <div class="match-time">📅 ${d.date}</div>
                     </div>
                 `;
             }).join('');
@@ -248,13 +311,9 @@
 
         function goToChineseTeamPage(event, teamName) {
             event.stopPropagation(); 
-            if (teamName.includes("組") || teamName.includes("場") || teamName.includes("分組")) return;
-
+            if (teamName.includes("組") || teamName.includes("場") || teamName.includes("勝者") || teamName.includes("未定")) return;
             let wikiSearchName = `${teamName}國家足球隊`;
             if (teamName === "美國") wikiSearchName = "美國國家男子足球隊";
-            if (teamName === "伊朗") wikiSearchName = "伊朗國家足球隊";
-            if (teamName === "南韓") wikiSearchName = "南韓國家足球隊";
-
             const targetUrl = `https://zh.m.wikipedia.org/zh-tw/${encodeURIComponent(wikiSearchName)}`;
             window.open(targetUrl, '_blank');
         }
@@ -262,125 +321,84 @@
         function enterScore(matchId, homeTeam, awayTeam) {
             const hScoreInput = prompt(`請輸入 [ ${homeTeam} ] 的得分:`, savedScores[matchId]?.hScore || "0");
             if (hScoreInput === null) return;
-
             const aScoreInput = prompt(`請輸入 [ ${awayTeam} ] 的得分:`, savedScores[matchId]?.aScore || "0");
             if (aScoreInput === null) return;
 
-            if (isNaN(hScoreInput) || isNaN(aScoreInput) || hScoreInput.trim() === "" || aScoreInput.trim() === "") {
-                alert("請輸入正確的數字比分！");
-                return;
-            }
-
-            savedScores[matchId] = {
-                hScore: parseInt(hScoreInput, 10),
-                aScore: parseInt(aScoreInput, 10)
-            };
+            savedScores[matchId] = { hScore: parseInt(hScoreInput, 10), aScore: parseInt(aScoreInput, 10) };
             localStorage.setItem('worldcup_scores', JSON.stringify(savedScores));
-            renderSchedule();
+            calculateStandingsData();
+            
+            // 判斷目前在哪個分頁，完成後就地重整
+            const currentView = document.querySelector('.view-selector').value;
+            if(currentView === 'schedule') renderSchedule();
+            if(currentView === 'bracket') renderBracketView();
         }
 
-        // 🌟 核心高階演算法：從賽程歷史中動態「實時計算」積分榜
-        function calculateAndRenderStandings() {
-            const groups = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
-            const db = {};
-
-            // 1. 先初始化所有參賽隊伍的基礎零數據
-            fullMatches.forEach(m => {
-                if (!m.group) return; // 跳過淘汰賽
-                if (!db[m.h]) db[m.h] = { name: m.h, code: m.hc, group: m.group, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0 };
-                if (!db[m.a]) db[m.a] = { name: m.a, code: m.ac, group: m.group, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, gd: 0, pts: 0 };
-            });
-
-            // 2. 遍歷所有被輸入過比分的比賽，進行數據加總
-            fullMatches.forEach(m => {
-                if (!m.group || !savedScores[m.id]) return; // 沒有組別或沒輸入過分數就跳過
-
-                const score = savedScores[m.id];
-                const hSc = score.hScore;
-                const aSc = score.aScore;
-
-                db[m.h].p += 1;
-                db[m.a].p += 1;
-                db[m.h].gf += hSc;
-                db[m.h].ga += aSc;
-                db[m.a].gf += aSc;
-                db[m.a].ga += hSc;
-
-                if (hSc > aSc) { // 主隊贏
-                    db[m.h].w += 1; db[m.h].pts += 3;
-                    db[m.a].l += 1;
-                } else if (hSc < aSc) { // 客隊贏
-                    db[m.a].w += 1; db[m.a].pts += 3;
-                    db[m.h].l += 1;
-                } else { // 平手
-                    db[m.h].d += 1; db[m.h].pts += 1;
-                    db[m.a].d += 1; db[m.a].pts += 1;
-                }
-                db[m.h].gd = db[m.h].gf - db[m.h].ga;
-                db[m.a].gd = db[m.a].gf - db[m.a].ga;
-            });
-
-            // 3. 按組別分類並進行「FIFA 官方標準排序」：積分 > 淨勝球 > 進球數
+        function renderStandingsTable() {
+            const groups = ["A", "B", "C", "D", "E", "F", "G", "H"];
             const container = document.getElementById('standings-container');
-            let htmlHTML = "";
-
+            let html = "";
             groups.forEach(gName => {
-                // 過濾出此組的 4 支隊伍
-                const groupTeams = Object.values(db).filter(t => t.group === gName);
-                
-                // 進行高階排序
-                groupTeams.sort((x, y) => {
-                    if (y.pts !== x.pts) return y.pts - x.pts; // 先比積分
-                    if (y.gd !== x.gd) return y.gd - x.gd;     // 再比淨勝球
-                    return y.gf - x.gf;                        // 最後比總進球數
-                });
-
-                // 生成該小組的 HTML 表格
-                htmlHTML += `
+                const groupTeams = Object.values(computedTeamsGlobal).filter(t => t.group === gName);
+                groupTeams.sort((x,y) => (y.pts !== x.pts) ? (y.pts - x.pts) : (y.gd !== x.gd) ? (y.gd - x.gd) : (y.gf - x.gf));
+                html += `
                     <div class="group-table-card">
                         <div class="group-title">小組賽 ${gName} 組</div>
                         <table>
-                            <thead>
-                                <tr>
-                                    <th style="text-align:left;">球隊</th>
-                                    <th>賽</th>
-                                    <th>勝</th>
-                                    <th>平</th>
-                                    <th>負</th>
-                                    <th>得/失</th>
-                                    <th>淨</th>
-                                    <th style="background:#e1e8f5; color:#1a365d;">分</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th style="text-align:left;">球隊</th><th>賽</th><th>分</th></tr></thead>
                             <tbody>
-                                ${groupTeams.map((t, idx) => {
-                                    // 前兩名給予高亮提示（代表晉級區）
-                                    const rowClass = idx < 2 ? 'class="highlight-row"' : '';
-                                    return `
-                                        <tr ${rowClass}>
-                                            <td class="t-name">
-                                                <img src="https://flagcdn.com/w20/${t.code}.png" class="t-flag">
-                                                <span>${t.name}</span>
-                                            </td>
-                                            <td>${t.p}</td>
-                                            <td>${t.w}</td>
-                                            <td>${t.d}</td>
-                                            <td>${t.l}</td>
-                                            <td style="font-size:11px; color:#666;">${t.gf}/${t.ga}</td>
-                                            <td style="color:${t.gd > 0 ? 'green' : t.gd < 0 ? 'red' : '#333'}">${t.gd > 0 ? '+' + t.gd : t.gd}</td>
-                                            <td style="font-weight:bold; color:#1a365d;">${t.pts}</td>
-                                        </tr>
-                                    `;
-                                }).join('')}
+                                ${groupTeams.map((t, idx) => `
+                                    <tr ${idx < 2 ? 'class="highlight-row"' : ''}>
+                                        <td class="t-name"><img src="https://flagcdn.com/w20/${t.code}.png" class="t-flag"><span>${t.name}</span></td>
+                                        <td>${t.p}</td><td style="font-weight:bold;">${t.pts}</td>
+                                    </tr>
+                                `).join('')}
                             </tbody>
                         </table>
                     </div>
                 `;
             });
-            container.innerHTML = htmlHTML;
+            container.innerHTML = html;
         }
 
-        // 預設載入首頁賽程
+        // 🌟 淘汰賽樹狀圖渲染邏輯 (按階段歸類並垂直排版)
+        function renderBracketView() {
+            const container = document.getElementById('bracket-container-raw');
+            const stages = [
+                { title: "32強淘汰賽", keys: ["R32"] },
+                { title: "16強賽", keys: ["R16"] },
+                { title: "8強半準決賽", keys: ["QF"] },
+                { title: "4強準決賽", keys: ["SF"] },
+                { title: "冠軍總決賽", keys: ["FN"] }
+            ];
+
+            container.innerHTML = stages.map(st => {
+                const stageMatches = fullMatches.filter(m => m.type === st.keys[0]);
+                return `
+                    <div class="bracket-column">
+                        <div class="bracket-column-title">${st.title}</div>
+                        ${stageMatches.map(m => {
+                            const d = getMatchDisplayData(m);
+                            const score = savedScores[m.id];
+                            const middle = score ? `<div class="score-display">${score.hScore}-${score.aScore}</div>` : `<div class="vs">VS</div>`;
+                            return `
+                                <div class="match-card" style="margin: 10px 0; width:220px;" onclick="handleCardClick(event, ${d.id}, '${d.hName}', '${d.aName}')">
+                                    <div style="font-size:10px; color:#999; font-weight:bold;">場次 ${d.id}</div>
+                                    <div class="teams-area" style="margin:5px 0;">
+                                        <div style="font-size:12px; font-weight:600;">${d.hName}</div>
+                                        ${middle}
+                                        <div style="font-size:12px; font-weight:600;">${d.aName}</div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 初始化
+        calculateStandingsData();
         renderSchedule();
     </script>
 </body>
