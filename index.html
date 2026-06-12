@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>2026 FIFA 世界盃完整賽程</title>
     
+    <!-- 手機加入主畫面高畫質圖示 -->
     <link rel="apple-touch-icon" href="https://crests.football-data.org/wm26.png">
     <link rel="icon" type="image/png" href="https://crests.football-data.org/wm26.png">
     
@@ -12,15 +13,23 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; color: #333; padding: 20px; margin: 0; }
         h1 { text-align: center; color: #1a365d; margin-bottom: 25px; font-size: 26px; font-weight: 700; }
         .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
-        .match-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #1a365d; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* 增加 cursor: pointer 讓使用者知道可以點擊 */
+        .match-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #1a365d; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .match-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
+        
         .match-meta { display: flex; justify-content: space-between; font-size: 11px; color: #718096; margin-bottom: 12px; font-weight: bold; }
         .stage-tag { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
         .teams-area { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; text-align: center; }
         .flag { width: 38px; height: 25px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
         .team-name { font-size: 14px; font-weight: 600; color: #2d3748; }
+        
+        /* 比分顯示樣式 */
+        .score-display { font-size: 20px; font-weight: 800; color: #1a365d; min-width: 50px; text-align: center; background: #f0f4f8; padding: 4px 8px; border-radius: 6px; }
         .vs { font-size: 12px; color: #a0aec0; font-weight: 700; padding: 0 10px; }
-        .match-time { font-size: 12px; color: #1a365d; background: #e1e8f5; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; }
+        
+        .match-time { font-size: 12px; color: #1a365d; background: #e1e8f5; text-align: center; padding: 7px; border-radius: 6px; font-weight: 700; margin-top: auto; }
     </style>
 </head>
 <body>
@@ -29,7 +38,7 @@
     <div class="match-grid" id="schedule-container"></div>
 
     <script>
-        // 104場官方校正賽程數據（時區全面校正為台灣時間 UTC+8）
+        // 104場官方校正賽程數據
         const fullMatches = [
             // --- 小組賽第 1 輪 ---
             { id: 1, stage: "小組賽 A組", date: "2026-06-12 03:00", h: "墨西哥", hc: "mx", a: "南非", ac: "za" },
@@ -42,7 +51,7 @@
             { id: 8, stage: "小組賽 D組", date: "2026-06-14 12:00", h: "澳洲", hc: "au", a: "土耳其", ac: "tr" },
             { id: 9, stage: "小組賽 E組", date: "2026-06-15 01:00", h: "德國", hc: "de", a: "庫拉索", ac: "cw" },
             { id: 10, stage: "小組賽 F組", date: "2026-06-15 04:00", h: "荷蘭", hc: "nl", a: "日本", ac: "jp" },
-            { id: 11, stage: "小組賽 E組", date: "2026-06-15 07:00", h: "象牙海岸", hc: "ci", a: "Ecuador", ac: "ec" },
+            { id: 11, stage: "小組賽 E組", date: "2026-06-15 07:00", h: "象牙海岸", hc: "ci", a: "厄瓜多", ac: "ec" },
             { id: 12, stage: "小組賽 F組", date: "2026-06-15 10:00", h: "瑞典", hc: "se", a: "突尼西亞", ac: "tn" },
             { id: 13, stage: "小組賽 H組", date: "2026-06-16 00:00", h: "西班牙", hc: "es", a: "維德角", ac: "cv" },
             { id: 14, stage: "小組賽 G組", date: "2026-06-16 03:00", h: "比利時", hc: "be", a: "埃及", ac: "eg" },
@@ -53,7 +62,7 @@
             { id: 19, stage: "小組賽 J組", date: "2026-06-17 09:00", h: "阿根廷", hc: "ar", a: "阿爾及利亞", ac: "dz" },
             { id: 20, stage: "小組賽 J組", date: "2026-06-17 12:00", h: "奧地利", hc: "at", a: "約旦", ac: "jo" },
             { id: 21, stage: "小組賽 L組", date: "2026-06-18 00:00", h: "加納", hc: "gh", a: "巴拿馬", ac: "pa" },
-            { id: 22, stage: "小組賽 L組", date: "2026-06-18 03:00", h: "英格蘭", hc: "gb-eng", a: "克羅埃西亞", ac: "hr" },
+            { id: 22, stage: "小組賽 L組", date: "2026-06-18 03:00", h: "英格蘭", hc: "gb-eng", a: "克羅埃西亞", hr: "hr" },
             { id: 23, stage: "小組賽 K組", date: "2026-06-18 06:00", h: "葡萄牙", hc: "pt", a: "剛果民主共和國", ac: "cd" },
             { id: 24, stage: "小組賽 K組", date: "2026-06-18 09:00", h: "烏茲別克", hc: "uz", a: "哥倫比亞", ac: "co" },
 
@@ -152,32 +161,74 @@
             { id: 104, stage: "世界盃 總決賽", date: "2026-07-20 03:00", h: "第101場勝者", hc: "un", a: "第102場勝者", ac: "un" }
         ];
 
-        const container = document.getElementById('schedule-container');
-        container.innerHTML = fullMatches.map(m => {
-            const homeFlagUrl = m.hc === 'un' ? 'https://flagcdn.com/w40/un.png' : `https://flagcdn.com/w40/${m.hc}.png`;
-            const awayFlagUrl = m.ac === 'un' ? 'https://flagcdn.com/w40/un.png' : `https://flagcdn.com/w40/${m.ac}.png`;
+        // 🌟 初始化讀取 LocalStorage 快取中的比分數據
+        const savedScores = JSON.parse(localStorage.getItem('worldcup_scores')) || {};
 
-            return `
-                <div class="match-card">
-                    <div class="match-meta">
-                        <span>場次 ${m.id}</span>
-                        <span class="stage-tag">${m.stage}</span>
-                    </div>
-                    <div class="teams-area">
-                        <div class="team">
-                            <img src="${homeFlagUrl}" class="flag" alt="${m.h}">
-                            <span class="team-name">${m.h}</span>
+        // 渲染主功能
+        function renderSchedule() {
+            const container = document.getElementById('schedule-container');
+            container.innerHTML = fullMatches.map(m => {
+                const homeFlagUrl = m.hc === 'un' ? 'https://flagcdn.com/w40/un.png' : `https://flagcdn.com/w40/${m.hc}.png`;
+                const awayFlagUrl = m.ac === 'un' ? 'https://flagcdn.com/w40/un.png' : `https://flagcdn.com/w40/${m.ac}.png`;
+
+                // 檢查是否有儲存過的比分，沒有的話預設顯示 "VS"
+                const matchScore = savedScores[m.id];
+                const middleDisplay = matchScore 
+                    ? `<div class="score-display">${matchScore.hScore} - ${matchScore.aScore}</div>`
+                    : `<div class="vs">VS</div>`;
+
+                return `
+                    <div class="match-card" onclick="enterScore(${m.id}, '${m.h}', '${m.a}')">
+                        <div class="match-meta">
+                            <span>場次 ${m.id}</span>
+                            <span class="stage-tag">${m.stage}</span>
                         </div>
-                        <div class="vs">VS</div>
-                        <div class="team">
-                            <img src="${awayFlagUrl}" class="flag" alt="${m.a}">
-                            <span class="team-name">${m.a}</span>
+                        <div class="teams-area">
+                            <div class="team">
+                                <img src="${homeFlagUrl}" class="flag" alt="${m.h}">
+                                <span class="team-name">${m.h}</span>
+                            </div>
+                            ${middleDisplay}
+                            <div class="team">
+                                <img src="${awayFlagUrl}" class="flag" alt="${m.a}">
+                                <span class="team-name">${m.a}</span>
+                            </div>
                         </div>
+                        <div class="match-time">📅 ${m.date}</div>
                     </div>
-                    <div class="match-time">📅 ${m.date}</div>
-                </div>
-            `;
-        }).join('');
+                `;
+            }).join('');
+        }
+
+        // 🌟 點擊卡片跳出輸入視窗的邏輯
+        function enterScore(matchId, homeTeam, awayTeam) {
+            // 彈出輸入框詢問主隊分數
+            const hScoreInput = prompt(`請輸入 [ ${homeTeam} ] 的得分:`, savedScores[matchId]?.hScore || "0");
+            if (hScoreInput === null) return; // 使用者按取消就跳出
+
+            // 彈出輸入框詢問客隊分數
+            const aScoreInput = prompt(`請輸入 [ ${awayTeam} ] 的得分:`, savedScores[matchId]?.aScore || "0");
+            if (aScoreInput === null) return;
+
+            // 驗證輸入是否為數字
+            if (isNaN(hScoreInput) || isNaN(aScoreInput) || hScoreInput.trim() === "" || aScoreInput.trim() === "") {
+                alert("請輸入正確的數字比分！");
+                return;
+            }
+
+            // 儲存進暫存物件中並寫入瀏覽器 LocalStorage 資料庫
+            savedScores[matchId] = {
+                hScore: parseInt(hScoreInput, 10),
+                aScore: parseInt(aScoreInput, 10)
+            };
+            localStorage.setItem('worldcup_scores', JSON.stringify(savedScores));
+
+            // 重新渲染畫面，立刻看見比分更新
+            renderSchedule();
+        }
+
+        // 首次啟動網頁渲染
+        renderSchedule();
     </script>
 </body>
 </html>
