@@ -3,68 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 FIFA 世界盃終極看板</title>
+    <title>2026 FIFA 世界盃終極暗黑看板</title>
     
     <link rel="apple-touch-icon" href="https://crests.football-data.org/wm26.png">
     <link rel="icon" type="image/png" href="https://crests.football-data.org/wm26.png">
     
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; color: #333; padding: 20px; margin: 0; }
+        /* 🌟 整體改為深卡其黑背景 */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; margin: 0; }
         
         /* 控制列與下拉選單 */
         .control-bar { max-width: 1400px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: flex-start; }
-        .view-selector { padding: 8px 16px; font-size: 16px; font-weight: bold; color: #1a365d; background: white; border: 2px solid #1a365d; border-radius: 8px; cursor: pointer; outline: none; }
+        /* 下拉選單深色優化 */
+        .view-selector { padding: 8px 16px; font-size: 16px; font-weight: bold; color: #38bdf8; background: #1e293b; border: 2px solid #38bdf8; border-radius: 8px; cursor: pointer; outline: none; }
         
-        h1 { text-align: center; color: #18181a; margin-bottom: 25px; font-size: 26px; font-weight: 700; }
+        /* 標題亮色優化 */
+        h1 { text-align: center; color: #38bdf8; margin-bottom: 25px; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         
         .view-section { display: none; }
         .view-section.active { display: block; }
 
-        /* 快速篩選控制面板 */
-        .filter-panel { max-width: 1400px; margin: 0 auto 20px auto; background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        /* 快速篩選控制面板深色優化 */
+        .filter-panel { max-width: 1400px; margin: 0 auto 20px auto; background: #1e293b; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); border: 1px solid #334155; }
         .filter-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; align-items: center; }
-        .filter-btn { padding: 6px 14px; font-size: 13px; font-weight: bold; background: #edf2f7; color: #4a5568; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
-        .filter-btn:hover { background: #e2e8f0; }
-        .filter-btn.active { background: #1a365d; color: white; }
+        .filter-btn { padding: 6px 14px; font-size: 13px; font-weight: bold; background: #334155; color: #cbd5e1; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .filter-btn:hover { background: #475569; }
+        .filter-btn.active { background: #38bdf8; color: #0f172a; }
         .group-btn-container { display: flex; flex-wrap: wrap; gap: 6px; }
-        .group-btn { padding: 4px 10px; font-size: 12px; font-weight: bold; background: #f7fafc; color: #718096; border: 1px solid #e2e8f0; border-radius: 4px; cursor: pointer; }
-        .group-btn.active { background: #3182ce; color: white; border-color: #3182ce; }
+        .group-btn { padding: 4px 10px; font-size: 12px; font-weight: bold; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 4px; cursor: pointer; }
+        .group-btn:hover { background: #334155; }
+        .group-btn.active { background: #0ea5e9; color: white; border-color: #0ea5e9; }
 
-        /* 賽程表卡片樣式 */
+        /* 賽程表卡片深色優化 */
         .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
-        .match-card { background: white; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-top: 4px solid #1a365d; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s; position: relative; }
-        .match-card:hover { transform: translateY(-3px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); }
-        .match-meta { display: flex; justify-content: space-between; font-size: 11px; color: #718096; margin-bottom: 12px; font-weight: bold; pointer-events: none; }
-        .stage-tag { background: #e2e8f0; padding: 2px 6px; border-radius: 4px; }
+        .match-card { background: #1e293b; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border-top: 4px solid #38bdf8; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.2s; border-left: 1px solid #334155; border-right: 1px solid #334155; border-bottom: 1px solid #334155; position: relative; }
+        .match-card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.4); background: #24334d; }
+        .match-meta { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 12px; font-weight: bold; pointer-events: none; }
+        .stage-tag { background: #334155; padding: 2px 6px; border-radius: 4px; color: #e2e8f0; }
         .teams-area { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
         .team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; text-align: center; padding: 6px; border-radius: 8px; transition: background 0.2s; }
-        .team:hover { background: #edf2f7; color: #1a365d; }
-        .flag { width: 38px; height: 25px; object-fit: cover; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
-        .team-name { font-size: 14px; font-weight: 600; color: #2d3748; }
-        .score-display { font-size: 20px; font-weight: 800; color: #1a365d; min-width: 50px; text-align: center; background: #f0f4f8; padding: 4px 8px; border-radius: 6px; }
-        .vs { font-size: 12px; color: #a0aec0; font-weight: 700; padding: 0 10px; }
+        .team:hover { background: #334155; color: #38bdf8; }
+        .flag { width: 38px; height: 25px; object-fit: cover; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
+        .team-name { font-size: 14px; font-weight: 600; color: #f1f5f9; }
+        
+        /* 比分與VS深色系調整 */
+        .score-display { font-size: 20px; font-weight: 800; color: #38bdf8; min-width: 50px; text-align: center; background: #0f172a; padding: 4px 8px; border-radius: 6px; border: 1px solid #334155; }
+        .vs { font-size: 12px; color: #64748b; font-weight: 700; padding: 0 10px; }
         
         .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-        .match-time { font-size: 12px; color: #1a365d; background: #e1e8f5; text-align: center; padding: 6px 10px; border-radius: 6px; font-weight: 700; pointer-events: none; flex-grow: 1; }
-        .favorite-star { font-size: 20px; color: #cbd5e0; cursor: pointer; padding-left: 10px; transition: color 0.2s; }
-        .favorite-star.active { color: #f6ad55; }
+        .match-time { font-size: 12px; color: #38bdf8; background: #0f172a; text-align: center; padding: 6px 10px; border-radius: 6px; font-weight: 700; pointer-events: none; flex-grow: 1; border: 1px solid #334155; }
+        .favorite-star { font-size: 20px; color: #475569; cursor: pointer; padding-left: 10px; transition: color 0.2s; }
+        .favorite-star.active { color: #fbbf24; }
 
-        /* 📊 積分榜表格優化（加入 RWD 橫向捲軸防爆排版） */
+        /* 📊 積分榜表格深色優化 */
         .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
-        .group-table-card { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow-x: auto; }
-        .group-title { font-size: 18px; font-weight: bold; color: #1a365d; margin-bottom: 10px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px; }
-        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; min-width: 310px; }
-        th { background: #edf2f7; color: #4a5568; padding: 6px 4px; font-weight: 600; }
-        td { padding: 8px 4px; border-bottom: 1px solid #edf2f7; }
+        .group-table-card { background: #1e293b; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); overflow-x: auto; border: 1px solid #334155; }
+        .group-title { font-size: 18px; font-weight: bold; color: #38bdf8; margin-bottom: 10px; border-bottom: 2px solid #334155; padding-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; min-width: 310px; color: #e2e8f0; }
+        th { background: #334155; color: #94a3b8; padding: 6px 4px; font-weight: 600; }
+        td { padding: 8px 4px; border-bottom: 1px solid #334155; }
         .t-name { text-align: left; font-weight: 600; display: flex; align-items: center; gap: 5px; min-width: 90px; }
         .t-flag { width: 20px; height: 13px; object-fit: cover; border-radius: 2px; }
-        .highlight-row { background: #f7fafc; font-weight: bold; color: #1a365d; }
+        /* 晉級高亮行深色優化 */
+        .highlight-row { background: #24334d; font-weight: bold; color: #38bdf8; }
 
-        /* 淘汰賽樹狀圖樣式 */
+        /* 淘汰賽樹狀圖深色優化 */
         .bracket-container { max-width: 1400px; margin: 0 auto; overflow-x: auto; padding-bottom: 20px; }
         .bracket-columns { display: flex; gap: 30px; min-width: 1200px; justify-content: space-between; }
         .bracket-column { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 15px; }
-        .bracket-column-title { text-align: center; font-weight: bold; color: #4a5568; background: #e2e8f0; padding: 6px; border-radius: 6px; margin-bottom: 10px; font-size: 14px; }
+        .bracket-column-title { text-align: center; font-weight: bold; color: #94a3b8; background: #334155; padding: 6px; border-radius: 6px; margin-bottom: 10px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -80,13 +87,13 @@
     <div id="schedule-view" class="view-section active">
         <div class="filter-panel">
             <div class="filter-row">
-                <span style="font-size:13px; font-weight:bold; color:#4a5568;">快速篩選：</span>
+                <span style="font-size:13px; font-weight:bold; color:#94a3b8;">快速篩選：</span>
                 <button id="btn-filter-all" class="filter-btn active" onclick="setFilterMode('all')">全部賽程</button>
                 <button id="btn-filter-today" class="filter-btn" onclick="setFilterMode('today')">📅 只看今天比賽</button>
                 <button id="btn-filter-fav" class="filter-btn" onclick="setFilterMode('fav')">⭐ 我的最愛球隊</button>
             </div>
             <div class="filter-row">
-                <span style="font-size:13px; font-weight:bold; color:#4a5568;">小組快選：</span>
+                <span style="font-size:13px; font-weight:bold; color:#94a3b8;">小組快選：</span>
                 <div class="group-btn-container">
                     <button id="gbtn-all" class="group-btn active" onclick="setGroupFilter('all')">全部</button>
                     <button id="gbtn-A" class="group-btn" onclick="setGroupFilter('A')">A組</button>
@@ -174,7 +181,7 @@
             { id: 45, group: "L", stage: "小組賽 L組", date: "2026-06-24 00:00", h: "巴拿馬", hc: "pa", a: "克羅埃西亞", ac: "hr" },
             { id: 46, group: "L", stage: "小組賽 L組", date: "2026-06-24 03:00", h: "英格蘭", hc: "gb-eng", a: "加納", ac: "gh" },
             { id: 47, group: "K", stage: "小組賽 K組", date: "2026-06-24 06:00", h: "葡萄牙", hc: "pt", a: "烏茲別克", ac: "uz" },
-            { id: 48, group: "K", stage: "小組賽 K組", date: "2026-06-24 09:00", h: "哥聯比亞", hc: "co", a: "剛果民主共和國", ac: "cd" },
+            { id: 48, group: "K", stage: "小組賽 K組", date: "2026-06-24 09:00", h: "哥倫比亞", hc: "co", a: "剛果民主共和國", ac: "cd" },
 
             // --- 小組賽第 3 輪 ---
             { id: 49, group: "A", stage: "小組賽 A組", date: "2026-06-25 00:00", h: "南非", hc: "za", a: "南韓", ac: "kr" },
@@ -191,7 +198,7 @@
             { id: 60, group: "F", stage: "小組賽 F組", date: "2026-06-26 03:00", h: "突尼西亞", hc: "tn", a: "荷蘭", ac: "nl" },
             { id: 61, group: "G", stage: "小組賽 G組", date: "2026-06-26 06:00", h: "埃及", hc: "eg", a: "伊朗", ac: "ir" },
             { id: 62, group: "G", stage: "小組賽 G組", date: "2026-06-26 06:00", h: "紐西蘭", hc: "nz", a: "比利時", ac: "be" },
-            { id: 63, group: "H", stage: "小組賽 H組", date: "2026-06-26 09:00", h: "維德角", hc: "cv", a: "沙烏地阿拉伯", sa: "sa" },
+            { id: 63, group: "H", stage: "小組賽 H組", date: "2026-06-26 09:00", h: "維德角", hc: "cv", a: "沙烏地阿拉伯", ac: "sa" },
             { id: 64, group: "H", stage: "小組賽 H組", date: "2026-06-26 09:00", h: "烏拉圭", hc: "uy", a: "西班牙", ac: "es" },
             { id: 65, group: "I", stage: "小組賽 I組", date: "2026-06-26 21:00", h: "塞內加爾", hc: "sn", a: "伊拉克", ac: "iq" },
             { id: 66, group: "I", stage: "小組賽 I組", date: "2026-06-26 21:00", h: "挪威", hc: "no", a: "法國", ac: "fr" },
@@ -259,7 +266,6 @@
             renderSchedule();
         }
 
-        // 處理小組篩選器
         function setGroupFilter(group) {
             currentGroupFilter = group;
             document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
@@ -267,7 +273,6 @@
             renderSchedule();
         }
 
-        // 加入/移出我的最愛
         function toggleFavorite(event, teamName) {
             event.stopPropagation(); 
             if (teamName.includes("組") || teamName.includes("場") || teamName.includes("勝者") || teamName.includes("未定")) return;
@@ -281,7 +286,6 @@
             renderSchedule();
         }
 
-        // 大數據積分運算核心
         function calculateStandingsData() {
             const db = {};
             fullMatches.forEach(m => {
@@ -351,7 +355,7 @@
             });
 
             if (filteredMatches.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:#999; padding: 40px; font-weight:bold;">沒有符合篩選條件的比賽場次。</div>`;
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding: 40px; font-weight:bold;">沒有符合篩選條件的比賽場次。</div>`;
                 return;
             }
 
@@ -410,7 +414,6 @@
             renderSchedule();
         }
 
-        // 🌟 修正補全：把「勝、平、負、進/失球、淨勝球」完整數據表格欄位完美回歸！
         function renderStandingsTable() {
             const groups = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
             const container = document.getElementById('standings-container');
@@ -434,7 +437,7 @@
                                     <th>負</th>
                                     <th>得/失</th>
                                     <th>淨</th>
-                                    <th style="background:#e1e8f5; color:#1a365d; border-radius: 4px;">分</th>
+                                    <th style="background:#334155; color:#38bdf8; border-radius: 4px;">分</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -448,11 +451,11 @@
                                         <td>${t.w}</td>
                                         <td>${t.d}</td>
                                         <td>${t.l}</td>
-                                        <td style="font-size:11px; color:#666;">${t.gf}/${t.ga}</td>
-                                        <td style="font-weight:bold; color:${t.gd > 0 ? '#2f855a' : t.gd < 0 ? '#c53030' : '#333'}">
+                                        <td style="font-size:11px; color:#94a3b8;">${t.gf}/${t.ga}</td>
+                                        <td style="font-weight:bold; color:${t.gd > 0 ? '#4ade80' : t.gd < 0 ? '#f87171' : '#cbd5e1'}">
                                             ${t.gd > 0 ? '+' + t.gd : t.gd}
                                         </td>
-                                        <td style="font-weight:bold; color:#1a365d;">${t.pts}</td>
+                                        <td style="font-weight:bold; color:#38bdf8;">${t.pts}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>
@@ -484,11 +487,11 @@
                             const middle = score ? `<div class="score-display">${score.hScore}-${score.aScore}</div>` : `<div class="vs">VS</div>`;
                             return `
                                 <div class="match-card" style="margin: 10px 0; width:220px;" onclick="handleCardClick(event, ${d.id}, '${d.hName}', '${d.aName}')">
-                                    <div style="font-size:10px; color:#999; font-weight:bold;">場次 ${d.id}</div>
+                                    <div style="font-size:10px; color:#94a3b8; font-weight:bold;">場次 ${d.id}</div>
                                     <div class="teams-area" style="margin:5px 0;">
-                                        <div style="font-size:12px; font-weight:600;">${d.hName}</div>
+                                        <div style="font-size:12px; font-weight:600; color:#f1f5f9;">${d.hName}</div>
                                         ${middle}
-                                        <div style="font-size:12px; font-weight:600;">${d.aName}</div>
+                                        <div style="font-size:12px; font-weight:600; color:#f1f5f9;">${d.aName}</div>
                                     </div>
                                 </div>
                             `;
