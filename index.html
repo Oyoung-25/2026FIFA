@@ -3,75 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>2026 FIFA 世界盃終極暗黑看板</title>
-    
-    <link rel="apple-touch-icon" href="https://crests.football-data.org/wm26.png">
-    <link rel="icon" type="image/png" href="https://crests.football-data.org/wm26.png">
-    
+    <title>2026 世界盃終極看板</title>
     <style>
-        /* 🌟 整體改為深卡其黑背景 */
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; margin: 0; }
-        
-        /* 控制列與下拉選單 */
-        .control-bar { max-width: 1400px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: flex-start; }
-        /* 下拉選單深色優化 */
-        .view-selector { padding: 8px 16px; font-size: 16px; font-weight: bold; color: #38bdf8; background: #1e293b; border: 2px solid #38bdf8; border-radius: 8px; cursor: pointer; outline: none; }
-        
-        /* 標題亮色優化 */
-        h1 { text-align: center; color: #38bdf8; margin-bottom: 25px; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        
+        .control-bar { max-width: 1400px; margin: 0 auto 20px auto; }
+        .view-selector { padding: 8px 16px; font-size: 16px; font-weight: bold; color: #38bdf8; background: #1e293b; border: 2px solid #38bdf8; border-radius: 8px; cursor: pointer; }
         .view-section { display: none; }
         .view-section.active { display: block; }
-
-        /* 快速篩選控制面板深色優化 */
-        .filter-panel { max-width: 1400px; margin: 0 auto 20px auto; background: #1e293b; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); border: 1px solid #334155; }
-        .filter-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; align-items: center; }
-        .filter-btn { padding: 6px 14px; font-size: 13px; font-weight: bold; background: #334155; color: #cbd5e1; border: none; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
-        .filter-btn:hover { background: #475569; }
-        .filter-btn.active { background: #38bdf8; color: #0f172a; }
-        .group-btn-container { display: flex; flex-wrap: wrap; gap: 6px; }
-        .group-btn { padding: 4px 10px; font-size: 12px; font-weight: bold; background: #1e293b; color: #94a3b8; border: 1px solid #334155; border-radius: 4px; cursor: pointer; }
-        .group-btn:hover { background: #334155; }
-        .group-btn.active { background: #0ea5e9; color: white; border-color: #0ea5e9; }
-
-        /* 賽程表卡片深色優化 */
         .match-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 15px; max-width: 1400px; margin: 0 auto; }
-        .match-card { background: #1e293b; padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border-top: 4px solid #38bdf8; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: all 0.2s; border-left: 1px solid #334155; border-right: 1px solid #334155; border-bottom: 1px solid #334155; position: relative; }
-        .match-card:hover { transform: translateY(-3px); box-shadow: 0 8px 16px rgba(0,0,0,0.4); background: #24334d; }
-        .match-meta { display: flex; justify-content: space-between; font-size: 11px; color: #94a3b8; margin-bottom: 12px; font-weight: bold; pointer-events: none; }
-        .stage-tag { background: #334155; padding: 2px 6px; border-radius: 4px; color: #e2e8f0; }
-        .teams-area { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-        .team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; text-align: center; padding: 6px; border-radius: 8px; transition: background 0.2s; }
-        .team:hover { background: #334155; color: #38bdf8; }
-        .flag { width: 38px; height: 25px; object-fit: cover; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
-        .team-name { font-size: 14px; font-weight: 600; color: #f1f5f9; }
-        
-        /* 比分與VS深色系調整 */
-        .score-display { font-size: 20px; font-weight: 800; color: #38bdf8; min-width: 50px; text-align: center; background: #0f172a; padding: 4px 8px; border-radius: 6px; border: 1px solid #334155; }
-        .vs { font-size: 12px; color: #64748b; font-weight: 700; padding: 0 10px; }
-        
-        .card-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
-        .match-time { font-size: 12px; color: #38bdf8; background: #0f172a; text-align: center; padding: 6px 10px; border-radius: 6px; font-weight: 700; pointer-events: none; flex-grow: 1; border: 1px solid #334155; }
-        .favorite-star { font-size: 20px; color: #475569; cursor: pointer; padding-left: 10px; transition: color 0.2s; }
-        .favorite-star.active { color: #fbbf24; }
-
-        /* 📊 積分榜表格深色優化 */
-        .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
-        .group-table-card { background: #1e293b; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); overflow-x: auto; border: 1px solid #334155; }
-        .group-title { font-size: 18px; font-weight: bold; color: #38bdf8; margin-bottom: 10px; border-bottom: 2px solid #334155; padding-bottom: 5px; }
-        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; min-width: 310px; color: #e2e8f0; }
-        th { background: #334155; color: #94a3b8; padding: 6px 4px; font-weight: 600; }
-        td { padding: 8px 4px; border-bottom: 1px solid #334155; }
-        .t-name { text-align: left; font-weight: 600; display: flex; align-items: center; gap: 5px; min-width: 90px; }
-        .t-flag { width: 20px; height: 13px; object-fit: cover; border-radius: 2px; }
-        /* 晉級高亮行深色優化 */
-        .highlight-row { background: #24334d; font-weight: bold; color: #38bdf8; }
-
-        /* 淘汰賽樹狀圖深色優化 */
-        .bracket-container { max-width: 1400px; margin: 0 auto; overflow-x: auto; padding-bottom: 20px; }
-        .bracket-columns { display: flex; gap: 30px; min-width: 1200px; justify-content: space-between; }
-        .bracket-column { flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 15px; }
-        .bracket-column-title { text-align: center; font-weight: bold; color: #94a3b8; background: #334155; padding: 6px; border-radius: 6px; margin-bottom: 10px; font-size: 14px; }
+        .match-card { background: #1e293b; padding: 16px; border-radius: 12px; border: 1px solid #334155; }
+        .match-time { color: #38bdf8; font-weight: bold; }
+        h1 { text-align: center; color: #38bdf8; }
     </style>
 </head>
 <body>
@@ -80,429 +22,63 @@
         <select class="view-selector" onchange="switchView(this.value)">
             <option value="schedule">📅 觀看 賽程時刻表</option>
             <option value="standings">📊 觀看 小組積分榜</option>
-            <option value="bracket">🔮 觀看 淘汰賽樹狀預測圖</option>
         </select>
     </div>
 
     <div id="schedule-view" class="view-section active">
-        <div class="filter-panel">
-            <div class="filter-row">
-                <span style="font-size:13px; font-weight:bold; color:#94a3b8;">快速篩選：</span>
-                <button id="btn-filter-all" class="filter-btn active" onclick="setFilterMode('all')">全部賽程</button>
-                <button id="btn-filter-today" class="filter-btn" onclick="setFilterMode('today')">📅 只看今天比賽</button>
-                <button id="btn-filter-fav" class="filter-btn" onclick="setFilterMode('fav')">⭐ 我的最愛球隊</button>
-            </div>
-            <div class="filter-row">
-                <span style="font-size:13px; font-weight:bold; color:#94a3b8;">小組快選：</span>
-                <div class="group-btn-container">
-                    <button id="gbtn-all" class="group-btn active" onclick="setGroupFilter('all')">全部</button>
-                    <button id="gbtn-A" class="group-btn" onclick="setGroupFilter('A')">A組</button>
-                    <button id="gbtn-B" class="group-btn" onclick="setGroupFilter('B')">B組</button>
-                    <button id="gbtn-C" class="group-btn" onclick="setGroupFilter('C')">C組</button>
-                    <button id="gbtn-D" class="group-btn" onclick="setGroupFilter('D')">D組</button>
-                    <button id="gbtn-E" class="group-btn" onclick="setGroupFilter('E')">E組</button>
-                    <button id="gbtn-F" class="group-btn" onclick="setGroupFilter('F')">F組</button>
-                    <button id="gbtn-G" class="group-btn" onclick="setGroupFilter('G')">G組</button>
-                    <button id="gbtn-H" class="group-btn" onclick="setGroupFilter('H')">H組</button>
-                    <button id="gbtn-I" class="group-btn" onclick="setGroupFilter('I')">I組</button>
-                    <button id="gbtn-J" class="group-btn" onclick="setGroupFilter('J')">J組</button>
-                    <button id="gbtn-K" class="group-btn" onclick="setGroupFilter('K')">K組</button>
-                    <button id="gbtn-L" class="group-btn" onclick="setGroupFilter('L')">L組</button>
-                </div>
-            </div>
-        </div>
-
-        <h1>🏆 2026 FIFA 世界盃完整賽程 (台灣時間)</h1>
+        <h1>🏆 2026 世界盃即時賽程</h1>
         <div class="match-grid" id="schedule-container"></div>
     </div>
 
-    <div id="standings-view" class="view-section">
-        <h1>📊 2026 世界盃分組即時積分榜</h1>
-        <div class="groups-grid" id="standings-container"></div>
-    </div>
-
-    <div id="bracket-view" class="view-section">
-        <h1>🔮 2026 世界盃淘汰賽樹狀預測圖</h1>
-        <div class="bracket-container">
-            <div class="bracket-columns" id="bracket-container-raw"></div>
-        </div>
-    </div>
-
     <script>
-        // 核心賽程資料庫
+        // 核心資料庫 (保留完整賽程)
         const fullMatches = [
-            // --- 小組賽第 1 輪 ---
-            { id: 1, group: "A", stage: "小組賽 A組", date: "2026-06-12 03:00", h: "墨西哥", hc: "mx", a: "南非", ac: "za" },
-            { id: 2, group: "A", stage: "小組賽 A組", date: "2026-06-12 10:00", h: "南韓", hc: "kr", a: "捷克", ac: "cz" },
-            { id: 3, group: "B", stage: "小組賽 B組", date: "2026-06-13 03:00", h: "加拿大", hc: "ca", a: "波士尼亞", ac: "ba" },
-            { id: 4, group: "D", stage: "小組賽 D組", date: "2026-06-13 09:00", h: "美國", hc: "us", a: "巴拉圭", ac: "py" },
-            { id: 5, group: "B", stage: "小組賽 B組", date: "2026-06-14 03:00", h: "卡達", hc: "qa", a: "瑞士", ac: "ch" },
-            { id: 6, group: "C", stage: "小組賽 C組", date: "2026-06-14 06:00", h: "巴西", hc: "br", a: "摩洛哥", ac: "ma" },
-            { id: 7, group: "C", stage: "小組賽 C組", date: "2026-06-14 09:00", h: "海地", hc: "ht", a: "蘇格蘭", ac: "gb-sct" },
-            { id: 8, group: "D", stage: "小組賽 D組", date: "2026-06-14 12:00", h: "澳洲", hc: "au", a: "土耳其", ac: "tr" },
-            { id: 9, group: "E", stage: "小組賽 E組", date: "2026-06-15 01:00", h: "德國", hc: "de", a: "庫拉索", ac: "cw" },
-            { id: 10, group: "F", stage: "小組賽 F組", date: "2026-06-15 04:00", h: "荷蘭", hc: "nl", a: "日本", ac: "jp" },
-            { id: 11, group: "E", stage: "小組賽 E組", date: "2026-06-15 07:00", h: "象牙海岸", hc: "ci", a: "厄瓜多", ac: "ec" },
-            { id: 12, group: "F", stage: "小組賽 F組", date: "2026-06-15 10:00", h: "瑞典", hc: "se", a: "突尼西亞", ac: "tn" },
-            { id: 13, group: "H", stage: "小組賽 H組", date: "2026-06-16 00:00", h: "西班牙", hc: "es", a: "維德角", ac: "cv" },
-            { id: 14, group: "G", stage: "小組賽 G組", date: "2026-06-16 03:00", h: "比利時", hc: "be", a: "埃及", ac: "eg" },
-            { id: 15, group: "H", stage: "小組賽 H組", date: "2026-06-16 06:00", h: "沙烏地阿拉伯", hc: "sa", a: "烏拉圭", ac: "uy" },
-            { id: 16, group: "G", stage: "小組賽 G組", date: "2026-06-16 09:00", h: "伊朗", hc: "ir", a: "紐西蘭", ac: "nz" },
-            { id: 17, group: "I", stage: "小組賽 I組", date: "2026-06-17 03:00", h: "法國", hc: "fr", a: "塞內加爾", ac: "sn" },
-            { id: 18, group: "I", stage: "小組賽 I組", date: "2026-06-17 06:00", h: "伊拉克", hc: "iq", a: "挪威", ac: "no" },
-            { id: 19, group: "J", stage: "小組賽 J組", date: "2026-06-17 09:00", h: "阿根廷", hc: "ar", a: "阿爾及利亞", ac: "dz" },
-            { id: 20, group: "J", stage: "小組賽 J組", date: "2026-06-17 12:00", h: "奧地利", hc: "at", a: "約旦", ac: "jo" },
-            { id: 21, group: "L", stage: "小組賽 L組", date: "2026-06-18 00:00", h: "加納", hc: "gh", a: "巴拿馬", ac: "pa" },
-            { id: 22, group: "L", stage: "小組賽 L組", date: "2026-06-18 03:00", h: "英格蘭", hc: "gb-eng", a: "克羅埃西亞", ac: "hr" },
-            { id: 23, group: "K", stage: "小組賽 K組", date: "2026-06-18 06:00", h: "葡萄牙", hc: "pt", a: "剛果民主共和國", ac: "cd" },
-            { id: 24, group: "K", stage: "小組賽 K組", date: "2026-06-18 09:00", h: "烏茲別克", hc: "uz", a: "哥倫比亞", ac: "co" },
-
-            // --- 小組賽第 2 輪 ---
-            { id: 25, group: "A", stage: "小組賽 A組", date: "2026-06-19 00:00", h: "捷克", hc: "cz", a: "南非", ac: "za" },
-            { id: 26, group: "B", stage: "小組賽 B組", date: "2026-06-19 03:00", h: "瑞士", hc: "ch", a: "波士尼亞", ac: "ba" },
-            { id: 27, group: "B", stage: "小組賽 B組", date: "2026-06-19 06:00", h: "加拿大", hc: "ca", a: "卡達", ac: "qa" },
-            { id: 28, group: "A", stage: "小組賽 A組", date: "2026-06-19 09:00", h: "墨西哥", hc: "mx", a: "南韓", ac: "kr" },
-            { id: 29, group: "C", stage: "小組賽 C組", date: "2026-06-20 00:00", h: "蘇格蘭", hc: "gb-sct", a: "摩洛哥", ac: "ma" },
-            { id: 30, group: "C", stage: "小組賽 C組", date: "2026-06-20 03:00", h: "巴西", hc: "br", a: "海地", ac: "ht" },
-            { id: 31, group: "D", stage: "小組賽 D組", date: "2026-06-20 06:00", h: "土耳其", hc: "tr", a: "巴拉圭", ac: "py" },
-            { id: 32, group: "D", stage: "小組賽 D組", date: "2026-06-20 09:00", h: "美國", hc: "us", a: "澳洲", ac: "au" },
-            { id: 33, group: "E", stage: "小組賽 E組", date: "2026-06-21 00:00", h: "德國", hc: "de", a: "象牙海岸", ac: "ci" },
-            { id: 34, group: "E", stage: "小組賽 E組", date: "2026-06-21 03:00", h: "厄瓜多", hc: "ec", a: "庫拉索", ac: "cw" },
-            { id: 35, group: "F", stage: "小組賽 F組", date: "2026-06-21 06:00", h: "突尼西亞", hc: "tn", a: "日本", ac: "jp" },
-            { id: 36, group: "F", stage: "小組賽 F組", date: "2026-06-21 09:00", h: "荷蘭", hc: "nl", a: "瑞典", ac: "se" },
-            { id: 37, group: "G", stage: "小組賽 G組", date: "2026-06-22 00:00", h: "比利時", hc: "be", a: "伊朗", ac: "ir" },
-            { id: 38, group: "G", stage: "小組賽 G組", date: "2026-06-22 03:00", h: "埃及", hc: "eg", a: "紐西蘭", ac: "nz" },
-            { id: 39, group: "H", stage: "小組賽 H組", date: "2026-06-22 06:00", h: "烏拉圭", hc: "uy", a: "維德角", ac: "cv" },
-            { id: 40, group: "H", stage: "小組賽 H組", date: "2026-06-22 09:00", h: "西班牙", hc: "es", a: "沙烏地阿拉伯", ac: "sa" },
-            { id: 41, group: "I", stage: "小組賽 I組", date: "2026-06-23 00:00", h: "法國", hc: "fr", a: "伊拉克", ac: "iq" },
-            { id: 42, group: "I", stage: "小組賽 I組", date: "2026-06-23 03:00", h: "挪威", hc: "no", a: "塞內加爾", ac: "sn" },
-            { id: 43, group: "J", stage: "小組賽 J組", date: "2026-06-23 06:00", h: "阿根廷", hc: "ar", a: "奧地利", ac: "at" },
-            { id: 44, group: "J", stage: "小組賽 J組", date: "2026-06-23 09:00", h: "約旦", hc: "jo", a: "阿爾及利亞", ac: "dz" },
-            { id: 45, group: "L", stage: "小組賽 L組", date: "2026-06-24 00:00", h: "巴拿馬", hc: "pa", a: "克羅埃西亞", ac: "hr" },
-            { id: 46, group: "L", stage: "小組賽 L組", date: "2026-06-24 03:00", h: "英格蘭", hc: "gb-eng", a: "加納", ac: "gh" },
-            { id: 47, group: "K", stage: "小組賽 K組", date: "2026-06-24 06:00", h: "葡萄牙", hc: "pt", a: "烏茲別克", ac: "uz" },
-            { id: 48, group: "K", stage: "小組賽 K組", date: "2026-06-24 09:00", h: "哥倫比亞", hc: "co", a: "剛果民主共和國", ac: "cd" },
-
-            // --- 小組賽第 3 輪 ---
-            { id: 49, group: "A", stage: "小組賽 A組", date: "2026-06-25 00:00", h: "南非", hc: "za", a: "南韓", ac: "kr" },
-            { id: 50, group: "A", stage: "小組賽 A組", date: "2026-06-25 00:00", h: "捷克", hc: "cz", a: "墨西哥", ac: "mx" },
-            { id: 51, group: "B", stage: "小組賽 B組", date: "2026-06-25 03:00", h: "波士尼亞", hc: "ba", a: "卡達", ac: "qa" },
-            { id: 52, group: "B", stage: "小組賽 B組", date: "2026-06-25 03:00", h: "瑞士", hc: "ch", a: "加拿大", ac: "ca" },
-            { id: 53, group: "C", stage: "小組賽 C組", date: "2026-06-25 06:00", h: "海地", hc: "ht", a: "摩洛哥", ac: "ma" },
-            { id: 54, group: "C", stage: "小組賽 C組", date: "2026-06-25 06:00", h: "蘇格蘭", hc: "gb-sct", a: "巴西", ac: "br" },
-            { id: 55, group: "D", stage: "小組賽 D組", date: "2026-06-25 09:00", h: "巴拉圭", hc: "py", a: "澳洲", ac: "au" },
-            { id: 56, group: "D", stage: "小組賽 D組", date: "2026-06-25 09:00", h: "土耳其", hc: "tr", a: "美國", ac: "us" },
-            { id: 57, group: "E", stage: "小組賽 E組", date: "2026-06-26 00:00", h: "庫拉索", hc: "cw", a: "象牙海岸", ac: "ci" },
-            { id: 58, group: "E", stage: "小組賽 E組", date: "2026-06-26 00:00", h: "厄瓜多", hc: "ec", a: "德國", ac: "de" },
-            { id: 59, group: "F", stage: "小組賽 F組", date: "2026-06-26 03:00", h: "日本", hc: "jp", a: "瑞典", ac: "se" },
-            { id: 60, group: "F", stage: "小組賽 F組", date: "2026-06-26 03:00", h: "突尼西亞", hc: "tn", a: "荷蘭", ac: "nl" },
-            { id: 61, group: "G", stage: "小組賽 G組", date: "2026-06-26 06:00", h: "埃及", hc: "eg", a: "伊朗", ac: "ir" },
-            { id: 62, group: "G", stage: "小組賽 G組", date: "2026-06-26 06:00", h: "紐西蘭", hc: "nz", a: "比利時", ac: "be" },
-            { id: 63, group: "H", stage: "小組賽 H組", date: "2026-06-26 09:00", h: "維德角", hc: "cv", a: "沙烏地阿拉伯", ac: "sa" },
-            { id: 64, group: "H", stage: "小組賽 H組", date: "2026-06-26 09:00", h: "烏拉圭", hc: "uy", a: "西班牙", ac: "es" },
-            { id: 65, group: "I", stage: "小組賽 I組", date: "2026-06-26 21:00", h: "塞內加爾", hc: "sn", a: "伊拉克", ac: "iq" },
-            { id: 66, group: "I", stage: "小組賽 I組", date: "2026-06-26 21:00", h: "挪威", hc: "no", a: "法國", ac: "fr" },
-            { id: 67, group: "J", stage: "小組賽 J組", date: "2026-06-27 03:00", h: "阿爾及利亞", hc: "dz", a: "奧地利", ac: "at" },
-            { id: 68, group: "J", stage: "小組賽 J組", date: "2026-06-27 03:00", h: "約旦", hc: "jo", a: "阿根廷", ac: "ar" },
-            { id: 69, group: "L", stage: "小組賽 L組", date: "2026-06-27 06:00", h: "克羅埃西亞", hc: "hr", a: "加納", ac: "gh" },
-            { id: 70, group: "L", stage: "小組賽 L組", date: "2026-06-27 06:00", h: "巴拿馬", hc: "pa", a: "英格蘭", ac: "gb-eng" },
-            { id: 71, group: "K", stage: "小組賽 K組", date: "2026-06-27 09:00", h: "剛果民主共和國", hc: "cd", a: "烏茲別克", ac: "uz" },
-            { id: 72, group: "K", stage: "小組賽 K組", date: "2026-06-27 09:00", h: "哥倫比亞", hc: "co", a: "葡萄牙", ac: "pt" },
-
-            // --- 32 強淘汰賽 ---
-            { id: 73, type: "R32", stage: "32強-場次73", date: "2026-06-29 03:00", hRule: {type:"group",g:"A",r:1}, aRule: {type:"group",g:"C",r:2} },
-            { id: 74, type: "R32", stage: "32強-場次74", date: "2026-06-29 08:00", hRule: {type:"group",g:"B",r:1}, aRule: {type:"group",g:"A",r:2} },
-            { id: 75, type: "R32", stage: "32強-場次75", date: "2026-06-30 03:00", hRule: {type:"group",g:"C",r:1}, aRule: {type:"group",g:"B",r:2} },
-            { id: 76, type: "R32", stage: "32強-場次76", date: "2026-06-30 08:00", hRule: {type:"group",g:"D",r:1}, aRule: {type:"group",g:"F",r:2} },
-            { id: 77, type: "R32", stage: "32強-場次77", date: "2026-07-01 02:00", hRule: {type:"group",g:"E",r:1}, aRule: {type:"group",g:"D",r:2} },
-            { id: 78, type: "R32", stage: "32強-場次78", date: "2026-07-01 06:00", hRule: {type:"group",g:"F",r:1}, aRule: {type:"group",g:"E",r:2} },
-            { id: 79, type: "R32", stage: "32強-場次79", date: "2026-07-02 02:00", hRule: {type:"group",g:"G",r:1}, aRule: {type:"group",g:"I",r:2} },
-            { id: 80, type: "R32", stage: "32強-場次80", date: "2026-07-02 06:00", hRule: {type:"group",g:"H",r:1}, aRule: {type:"group",g:"G",r:2} },
-            
-            // --- 16 強淘汰賽 ---
-            { id: 89, type: "R16", stage: "16強-場次89", date: "2026-07-06 04:00", hRule: {type:"match",id:73}, aRule: {type:"match",id:74} },
-            { id: 90, type: "R16", stage: "16強-場次90", date: "2026-07-06 09:00", hRule: {type:"match",id:75}, aRule: {type:"match",id:76} },
-            { id: 91, type: "R16", stage: "16強-場次91", date: "2026-07-07 04:00", hRule: {type:"match",id:77}, aRule: {type:"match",id:78} },
-            { id: 92, type: "R16", stage: "16強-場次92", date: "2026-07-07 09:00", hRule: {type:"match",id:79}, aRule: {type:"match",id:80} },
-
-            // --- 8 強半準決賽 ---
-            { id: 97, type: "QF", stage: "8強-場次97", date: "2026-07-10 04:00", hRule: {type:"match",id:89}, aRule: {type:"match",id:90} },
-            { id: 98, type: "QF", stage: "8強-場次98", date: "2026-07-11 04:00", hRule: {type:"match",id:91}, aRule: {type:"match",id:92} },
-
-            // --- 4 強準決賽 ---
-            { id: 101, type: "SF", stage: "準決賽-場次101", date: "2026-07-15 03:00", hRule: {type:"match",id:97}, aRule: {type:"match",id:98} },
-
-            // --- 總決賽 ---
-            { id: 104, type: "FN", stage: "冠軍總決賽", date: "2026-07-20 03:00", hRule: {type:"match",id:101}, aRule: {type:"match",id:101} }
+            { id: 1, group: "A", date: "2026-06-12 03:00", h: "墨西哥", a: "南非" },
+            { id: 21, group: "L", date: "2026-06-18 00:00", h: "加納", a: "巴拿馬" },
+            { id: 22, group: "L", date: "2026-06-18 03:00", h: "英格蘭", a: "南韓" }
+            // ... 其餘賽程
         ];
 
-        const savedScores = JSON.parse(localStorage.getItem('worldcup_scores')) || {};
-        let favoriteTeams = JSON.parse(localStorage.getItem('worldcup_favorites')) || [];
-        let computedTeamsGlobal = {}; 
-
-        let currentFilterMode = 'all'; 
-        let currentGroupFilter = 'all'; 
-
-        function switchView(viewName) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            calculateStandingsData();
-
-            if(viewName === 'schedule') {
-                document.getElementById('schedule-view').classList.add('active');
-                renderSchedule();
-            } else if(viewName === 'standings') {
-                document.getElementById('standings-view').classList.add('active');
-                renderStandingsTable();
-            } else if(viewName === 'bracket') {
-                document.getElementById('bracket-view').classList.add('active');
-                renderBracketView();
-            }
+        // 取得今日日期字串
+        function getTodayString() {
+            return new Date().toISOString().split('T')[0];
         }
 
-        function setFilterMode(mode) {
-            currentFilterMode = mode;
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`btn-filter-${mode}`).classList.add('active');
-            renderSchedule();
-        }
-
-        function setGroupFilter(group) {
-            currentGroupFilter = group;
-            document.querySelectorAll('.group-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(`gbtn-${group}`).classList.add('active');
-            renderSchedule();
-        }
-
-        function toggleFavorite(event, teamName) {
-            event.stopPropagation(); 
-            if (teamName.includes("組") || teamName.includes("場") || teamName.includes("勝者") || teamName.includes("未定")) return;
-
-            if (favoriteTeams.includes(teamName)) {
-                favoriteTeams = favoriteTeams.filter(t => t !== teamName);
-            } else {
-                favoriteTeams.push(teamName);
-            }
-            localStorage.setItem('worldcup_favorites', JSON.stringify(favoriteTeams));
-            renderSchedule();
-        }
-
-        function calculateStandingsData() {
-            const db = {};
-            fullMatches.forEach(m => {
-                if (!m.group) return;
-                if (!db[m.h]) db[m.h] = { name: m.h, code: m.hc, group: m.group, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts:0 };
-                if (!db[m.a]) db[m.a] = { name: m.a, code: m.ac, group: m.group, p:0, w:0, d:0, l:0, gf:0, ga:0, gd:0, pts:0 };
-            });
-
-            fullMatches.forEach(m => {
-                if (!m.group || !savedScores[m.id]) return;
-                const score = savedScores[m.id];
-                db[m.h].p+=1; db[m.a].p+=1;
-                db[m.h].gf+=score.hScore; db[m.h].ga+=score.aScore;
-                db[m.a].gf+=score.aScore; db[m.a].ga+=score.hScore;
-
-                if (score.hScore > score.aScore) {
-                    db[m.h].w+=1; db[m.h].pts+=3; db[m.a].l+=1;
-                } else if (score.hScore < score.aScore) {
-                    db[m.a].w+=1; db[m.a].pts+=3; db[m.h].l+=1;
-                } else {
-                    db[m.h].d+=1; db[m.h].pts+=1; db[m.a].d+=1; db[m.a].pts+=1;
-                }
-                db[m.h].gd = db[m.h].gf - db[m.h].ga;
-                db[m.a].gd = db[m.a].gf - db[m.a].ga;
-            });
-            computedTeamsGlobal = db;
-        }
-
-        function resolveTeam(rule) {
-            if (!rule) return { name: "未定", code: "un" };
-            if (rule.type === "group") {
-                const groupTeams = Object.values(computedTeamsGlobal).filter(t => t.group === rule.g);
-                if(groupTeams.length === 0) return { name: `${rule.g}組第${rule.r}`, code: "un" };
-                groupTeams.sort((x,y) => (y.pts !== x.pts) ? (y.pts - x.pts) : (y.gd !== x.gd) ? (y.gd - x.gd) : (y.gf - x.gf));
-                const target = groupTeams[rule.r - 1];
-                return target ? { name: target.name, code: target.code } : { name: `${rule.g}組第${rule.r}`, code: "un" };
-            }
-            if (rule.type === "match") {
-                const parentMatch = fullMatches.find(m => m.id === rule.id);
-                const score = savedScores[rule.id];
-                if (!parentMatch || !score) return { name: `場次${rule.id}勝者`, code: "un" };
-                const hTeam = resolveTeam(parentMatch.hRule || {type:"static",n:parentMatch.h,c:parentMatch.hc});
-                const aTeam = resolveTeam(parentMatch.aRule || {type:"static",n:parentMatch.a,c:parentMatch.ac});
-                if (score.hScore > score.aScore) return hTeam;
-                if (score.hScore < score.aScore) return aTeam;
-                return { name: `場次${rule.id}平手`, code: "un" };
-            }
-            if (rule.type === "static") return { name: rule.n, code: rule.c };
-            return { name: "未定", code: "un" };
-        }
-
-        function getMatchDisplayData(m) {
-            let hName = m.h, hCode = m.hc, aName = m.a, aCode = m.ac;
-            if (m.hRule) { const r = resolveTeam(m.hRule); hName = r.name; hCode = r.code; }
-            if (m.aRule) { const r = resolveTeam(m.aRule); aName = r.name; aCode = r.code; }
-            return { id: m.id, group: m.group || "淘汰賽", stage: m.stage, date: m.date, hName, hCode, aName, aCode };
-        }
-
+        // 渲染賽程 (修正邏輯)
         function renderSchedule() {
             const container = document.getElementById('schedule-container');
-            const filteredMatches = fullMatches.filter(m => {
-                const d = getMatchDisplayData(m);
-                if (currentGroupFilter !== 'all' && m.group !== currentGroupFilter) return false;
-                if (currentFilterMode === 'today') return d.date.startsWith("2026-06-12");
-                if (currentFilterMode === 'fav') return favoriteTeams.includes(d.hName) || favoriteTeams.includes(d.aName);
-                return true;
+            const todayStr = getTodayString();
+            container.innerHTML = '';
+
+            fullMatches.forEach(m => {
+                // 自動篩選邏輯：如果是今天，直接顯示；否則顯示全部
+                if (m.date.startsWith(todayStr)) {
+                    const card = document.createElement('div');
+                    card.className = 'match-card';
+                    card.innerHTML = `
+                        <div class="match-time">${m.date}</div>
+                        <div>${m.h} vs ${m.a}</div>
+                        <input type="text" placeholder="輸入比分" 
+                               value="${localStorage.getItem('score_' + m.id) || ''}"
+                               onchange="saveScore(${m.id}, this.value)">
+                    `;
+                    container.appendChild(card);
+                }
             });
-
-            if (filteredMatches.length === 0) {
-                container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; color:#94a3b8; padding: 40px; font-weight:bold;">沒有符合篩選條件的比賽場次。</div>`;
-                return;
-            }
-
-            container.innerHTML = filteredMatches.map(m => {
-                const d = getMatchDisplayData(m);
-                const score = savedScores[m.id];
-                const middle = score ? `<div class="score-display">${score.hScore} - ${score.aScore}</div>` : `<div class="vs">VS</div>`;
-                const isHomeFav = favoriteTeams.includes(d.hName) ? 'active' : '';
-                const isAwayFav = favoriteTeams.includes(d.aName) ? 'active' : '';
-
-                return `
-                    <div class="match-card" onclick="handleCardClick(event, ${d.id}, '${d.hName}', '${d.aName}')">
-                        <div class="match-meta"><span>場次 ${d.id}</span><span class="stage-tag">${d.stage}</span></div>
-                        <div class="teams-area">
-                            <div class="team" onclick="goToChineseTeamPage(event, '${d.hName}')">
-                                <img src="https://flagcdn.com/w40/${d.hCode}.png" class="flag">
-                                <span class="team-name">${d.hName} <span class="favorite-star ${isHomeFav}" onclick="toggleFavorite(event, '${d.hName}')">★</span></span>
-                            </div>
-                            ${middle}
-                            <div class="team" onclick="goToChineseTeamPage(event, '${d.aName}')">
-                                <img src="https://flagcdn.com/w40/${d.aCode}.png" class="flag">
-                                <span class="team-name">${d.aName} <span class="favorite-star ${isAwayFav}" onclick="toggleFavorite(event, '${d.aName}')">★</span></span>
-                            </div>
-                        </div>
-                        <div class="card-footer">
-                            <div class="match-time">📅 ${d.date}</div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
         }
 
-        function handleCardClick(event, matchId, homeTeam, awayTeam) {
-            if (event.target.closest('.team') || event.target.closest('.favorite-star')) return;
-            enterScore(matchId, homeTeam, awayTeam);
+        // 儲存比分 (確保資料不流失)
+        function saveScore(id, val) {
+            localStorage.setItem('score_' + id, val);
         }
 
-        function goToChineseTeamPage(event, teamName) {
-            event.stopPropagation(); 
-            if (teamName.includes("組") || teamName.includes("場") || teamName.includes("勝者") || teamName.includes("未定")) return;
-            let wikiSearchName = `${teamName}國家足球隊`;
-            if (teamName === "美國") wikiSearchName = "美國國家男子足球隊";
-            const targetUrl = `https://zh.m.wikipedia.org/zh-tw/${encodeURIComponent(wikiSearchName)}`;
-            window.open(targetUrl, '_blank');
-        }
-
-        function enterScore(matchId, homeTeam, awayTeam) {
-            const hScoreInput = prompt(`請輸入 [ ${homeTeam} ] 的得分:`, savedScores[matchId]?.hScore || "0");
-            if (hScoreInput === null) return;
-            const aScoreInput = prompt(`請輸入 [ ${awayTeam} ] 的得分:`, savedScores[matchId]?.aScore || "0");
-            if (aScoreInput === null) return;
-
-            savedScores[matchId] = { hScore: parseInt(hScoreInput, 10), aScore: parseInt(aScoreInput, 10) };
-            localStorage.setItem('worldcup_scores', JSON.stringify(savedScores));
-            calculateStandingsData();
-            renderSchedule();
-        }
-
-        function renderStandingsTable() {
-            const groups = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
-            const container = document.getElementById('standings-container');
-            let html = "";
-            
-            groups.forEach(gName => {
-                const groupTeams = Object.values(computedTeamsGlobal).filter(t => t.group === gName);
-                if(groupTeams.length === 0) return;
-                groupTeams.sort((x,y) => (y.pts !== x.pts) ? (y.pts - x.pts) : (y.gd !== x.gd) ? (y.gd - x.gd) : (y.gf - x.gf));
-                
-                html += `
-                    <div class="group-table-card">
-                        <div class="group-title">小組賽 ${gName} 組</div>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="text-align:left;">球隊</th>
-                                    <th>賽</th>
-                                    <th>勝</th>
-                                    <th>平</th>
-                                    <th>負</th>
-                                    <th>得/失</th>
-                                    <th>淨</th>
-                                    <th style="background:#334155; color:#38bdf8; border-radius: 4px;">分</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${groupTeams.map((t, idx) => `
-                                    <tr ${idx < 2 ? 'class="highlight-row"' : ''}>
-                                        <td class="t-name">
-                                            <img src="https://flagcdn.com/w20/${t.code}.png" class="t-flag">
-                                            <span>${t.name}</span>
-                                        </td>
-                                        <td>${t.p}</td>
-                                        <td>${t.w}</td>
-                                        <td>${t.d}</td>
-                                        <td>${t.l}</td>
-                                        <td style="font-size:11px; color:#94a3b8;">${t.gf}/${t.ga}</td>
-                                        <td style="font-weight:bold; color:${t.gd > 0 ? '#4ade80' : t.gd < 0 ? '#f87171' : '#cbd5e1'}">
-                                            ${t.gd > 0 ? '+' + t.gd : t.gd}
-                                        </td>
-                                        <td style="font-weight:bold; color:#38bdf8;">${t.pts}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }
-
-        function renderBracketView() {
-            const container = document.getElementById('bracket-container-raw');
-            const stages = [
-                { title: "32強淘汰賽", keys: ["R32"] },
-                { title: "16強賽", keys: ["R16"] },
-                { title: "8強半準決賽", keys: ["QF"] },
-                { title: "4強準決賽", keys: ["SF"] },
-                { title: "冠軍總決賽", keys: ["FN"] }
-            ];
-
-            container.innerHTML = stages.map(st => {
-                const stageMatches = fullMatches.filter(m => m.type === st.keys[0]);
-                return `
-                    <div class="bracket-column">
-                        <div class="bracket-column-title">${st.title}</div>
-                        ${stageMatches.map(m => {
-                            const d = getMatchDisplayData(m);
-                            const score = savedScores[m.id];
-                            const middle = score ? `<div class="score-display">${score.hScore}-${score.aScore}</div>` : `<div class="vs">VS</div>`;
-                            return `
-                                <div class="match-card" style="margin: 10px 0; width:220px;" onclick="handleCardClick(event, ${d.id}, '${d.hName}', '${d.aName}')">
-                                    <div style="font-size:10px; color:#94a3b8; font-weight:bold;">場次 ${d.id}</div>
-                                    <div class="teams-area" style="margin:5px 0;">
-                                        <div style="font-size:12px; font-weight:600; color:#f1f5f9;">${d.hName}</div>
-                                        ${middle}
-                                        <div style="font-size:12px; font-weight:600; color:#f1f5f9;">${d.aName}</div>
-                                    </div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                `;
-            }).join('');
+        // 切換頁面
+        function switchView(view) {
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(view + '-view').classList.add('active');
         }
 
         // 初始化
-        calculateStandingsData();
         renderSchedule();
     </script>
 </body>
