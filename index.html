@@ -129,18 +129,6 @@
     </div>
 
     <script>
-        // 放在程式的最開頭，作為啟動任務
-async function tryAutoUpdateScores() {
-    try {
-        // 這是呼叫 FIFA 公開 API 的位置
-        const res = await fetch('https://api.fifa.com/api/v3/calendar/matches?idCompetition=17');
-        const data = await res.json();
-        // 這裡會將 API 回傳的結果更新到你的 worldcup_scores
-        // 注意：這裡若實作需要處理 JSON 資料結構的對應
-    } catch (err) {
-        console.warn("無法連接自動更新伺服器，使用離線備案");
-    }
-}
         // 核心賽程資料庫
         const fullMatches = [
             // --- 小組賽第 1 輪 ---
