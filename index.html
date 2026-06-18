@@ -345,11 +345,11 @@
         }
 
         function renderSchedule() {
-            const todayStr = new Date().toISOString().split('T')[0];
+            const container = document.getElementById('schedule-container');
             const filteredMatches = fullMatches.filter(m => {
                 const d = getMatchDisplayData(m);
                 if (currentGroupFilter !== 'all' && m.group !== currentGroupFilter) return false;
-                if (currentFilterMode === 'today') return m.date.startsWith(todayStr);
+                if (currentFilterMode === 'today') return d.date.startsWith("2026-06-12");
                 if (currentFilterMode === 'fav') return favoriteTeams.includes(d.hName) || favoriteTeams.includes(d.aName);
                 return true;
             });
