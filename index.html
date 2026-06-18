@@ -9,15 +9,13 @@
     <link rel="icon" type="image/png" href="https://crests.football-data.org/wm26.png">
     
     <style>
-        /* 🌟 整體改為深卡其黑背景 */
+        /* 整體深色背景 */
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f172a; color: #f8fafc; padding: 20px; margin: 0; }
         
         /* 控制列與下拉選單 */
         .control-bar { max-width: 1400px; margin: 0 auto 20px auto; display: flex; align-items: center; justify-content: flex-start; }
-        /* 下拉選單深色優化 */
         .view-selector { padding: 8px 16px; font-size: 16px; font-weight: bold; color: #38bdf8; background: #1e293b; border: 2px solid #38bdf8; border-radius: 8px; cursor: pointer; outline: none; }
         
-        /* 標題亮色優化 */
         h1 { text-align: center; color: #38bdf8; margin-bottom: 25px; font-size: 26px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
         
         .view-section { display: none; }
@@ -55,7 +53,7 @@
         .favorite-star { font-size: 20px; color: #475569; cursor: pointer; padding-left: 10px; transition: color 0.2s; }
         .favorite-star.active { color: #fbbf24; }
 
-        /* 📊 積分榜表格深色優化 */
+        /* 積分榜表格深色優化 */
         .groups-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 20px; max-width: 1400px; margin: 0 auto; }
         .group-table-card { background: #1e293b; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); overflow-x: auto; border: 1px solid #334155; }
         .group-title { font-size: 18px; font-weight: bold; color: #38bdf8; margin-bottom: 10px; border-bottom: 2px solid #334155; padding-bottom: 5px; }
@@ -64,7 +62,6 @@
         td { padding: 8px 4px; border-bottom: 1px solid #334155; }
         .t-name { text-align: left; font-weight: 600; display: flex; align-items: center; gap: 5px; min-width: 90px; }
         .t-flag { width: 20px; height: 13px; object-fit: cover; border-radius: 2px; }
-        /* 晉級高亮行深色優化 */
         .highlight-row { background: #24334d; font-weight: bold; color: #38bdf8; }
 
         /* 淘汰賽樹狀圖深色優化 */
@@ -129,7 +126,7 @@
     </div>
 
     <script>
-        // 核心賽程資料庫
+        // 核心賽程資料庫 (完整 104 場)
         const fullMatches = [
             // --- 小組賽第 1 輪 ---
             { id: 1, group: "A", stage: "小組賽 A組", date: "2026-06-12 03:00", h: "墨西哥", hc: "mx", a: "南非", ac: "za" },
@@ -236,12 +233,27 @@
             { id: 104, type: "FN", stage: "冠軍總決賽", date: "2026-07-20 03:00", hRule: {type:"match",id:101}, aRule: {type:"match",id:101} }
         ];
 
-        const savedScores = JSON.parse(localStorage.getItem('worldcup_scores')) || {};
+        let savedScores = JSON.parse(localStorage.getItem('worldcup_scores')) || {};
         let favoriteTeams = JSON.parse(localStorage.getItem('worldcup_favorites')) || [];
         let computedTeamsGlobal = {}; 
 
         let currentFilterMode = 'all'; 
         let currentGroupFilter = 'all'; 
+
+        // 動態取得本地今天的日期 (格式: YYYY-MM-DD)
+        function getTodayString() {
+            const d = new Date();
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+
+        // 預留給未來自動更新 API 的接口
+        async function tryAutoUpdateScores() {
+            console.log("嘗試同步官方比分中...");
+            // 未來可在這裡加入 fetch API 邏輯
+        }
 
         function switchView(viewName) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
@@ -346,10 +358,15 @@
 
         function renderSchedule() {
             const container = document.getElementById('schedule-container');
+            const todayStr = getTodayString(); 
+
             const filteredMatches = fullMatches.filter(m => {
                 const d = getMatchDisplayData(m);
                 if (currentGroupFilter !== 'all' && m.group !== currentGroupFilter) return false;
-                if (currentFilterMode === 'today') return d.date.startsWith("2026-06-12");
+                
+                // 動態比對今天日期
+                if (currentFilterMode === 'today') return d.date.startsWith(todayStr);
+                
                 if (currentFilterMode === 'fav') return favoriteTeams.includes(d.hName) || favoriteTeams.includes(d.aName);
                 return true;
             });
@@ -502,6 +519,7 @@
         }
 
         // 初始化
+        tryAutoUpdateScores();
         calculateStandingsData();
         renderSchedule();
     </script>
